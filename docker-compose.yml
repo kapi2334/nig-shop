@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ./userService
+      dockerfile: Dockerfile
+    container_name: user_service
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+    ports:
+      - "3001:5001" 
+    networks:
+      - backend
+
+  product-service:
+    build:
+      context: ./productService
+      dockerfile: Dockerfile
+    container_name: product_service
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+    ports:
+      - "3000:5000" 
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
