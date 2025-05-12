@@ -19,11 +19,56 @@ services:
       dockerfile: Dockerfile
     container_name: product_service
     environment:
-      - ASPNETCORE_URLS=http://+:5000
+      - aspnetcore_urls=http://+:5000
     ports:
       - "3000:5000" 
     networks:
       - backend
+  admin-service:
+    build:
+      context: ./adminService
+      dockerfile: Dockerfile
+    container_name: admin_service
+    environment:
+      - aspnetcore_urls=http://+:6000
+    ports:
+      - "3100:6000" 
+    networks:
+      - backend
+  payment-service:
+    build:
+      context: ./paymentService
+      dockerfile: Dockerfile
+    container_name: payment_service
+    environment:
+      - aspnetcore_urls=http://+:5004
+    ports:
+      - "3004:5004" 
+    networks:
+      - backend
+  order-service:
+    build:
+      context: ./orderService
+      dockerfile: Dockerfile
+    container_name: order_service
+    environment:
+      - aspnetcore_urls=http://+:5003
+    ports:
+      - "3003:5003" 
+    networks:
+      - backend
+  invoice-service:
+    build:
+      context: ./invoiceService
+      dockerfile: Dockerfile
+    container_name: invoice_service
+    environment:
+      - ASPNETCORE_URLS=http://+:5002
+    ports:
+      - "3002:5002" 
+    networks:
+      - backend
+
 
 networks:
   backend:
