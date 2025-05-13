@@ -13,30 +13,32 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//Getting user data from db
 
-var summaries = new[]
+app.MapGet("/api/usersService/users/{inputId}", (int inputId) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    return Results.Ok($"Called action.Called user {inputId} ");
+})
+.WithName("addUserToDataBase")
+.WithOpenApi();
 
-app.MapGet("/weatherforecast", () =>
+//removing user from db
+app.MapDelete("/api/userService/users/{inputId}", (int inputId) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    Console.WriteLine($"User deleted: {inputId}");
+    return Results.Ok()
+})
+.WithName("removeUserFromDataBase")
+.WithOpenApi();
+
+//Adding new user into database 
+app.MapPost("/api/usersService/users", () =>
+{
+
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+

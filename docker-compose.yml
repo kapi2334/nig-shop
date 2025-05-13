@@ -49,17 +49,6 @@ services:
       - "3000:5000" 
     networks:
       - backend
-  admin-service:
-    build:
-      context: ./adminService
-      dockerfile: Dockerfile
-    container_name: admin_service
-    environment:
-      - ASPNETCORE_URLS=http://+:6000
-    ports:
-      - "3100:6000" 
-    networks:
-      - backend
   payment-service:
     build:
       context: ./paymentService
