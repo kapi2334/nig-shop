@@ -1,4 +1,4 @@
-using clientApp.Components;
+using adminApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<MainLayout>()
+app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();

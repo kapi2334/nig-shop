@@ -1,6 +1,32 @@
 version: '3.8'
 
 services:
+  ############################UI Containers############################
+  user-app:
+    build:
+      context: ./clientApp
+      dockerfile: Dockerfile
+    container_name: clientApp 
+    environment:
+      - ASPNETCORE_URLS=http://+:5010
+    ports:
+      - "4000:5010" 
+    networks:
+      - ui 
+  admin-app:
+    build:
+      context: ./adminApp
+      dockerfile: Dockerfile
+    container_name: adminApp 
+    environment:
+      - ASPNETCORE_URLS=http://+:5011
+    ports:
+      - "4001:5011" 
+    networks:
+      - ui 
+
+
+  ############################API Services############################
   user-service:
     build:
       context: ./userService
@@ -72,5 +98,7 @@ services:
 
 networks:
   backend:
+    driver: bridge
+  ui:
     driver: bridge
 

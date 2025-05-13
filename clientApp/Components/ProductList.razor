@@ -1,0 +1,16 @@
+@code {
+    [Parameter] public EventCallback<Product> OnProductSelected { get; set; }
+
+    List<Product> products = new()
+    {
+        new Product { Id = 1, Name = "Cegła 900", Price = 2137 }
+    };
+}
+
+@foreach (var product in products)
+{
+    <div style="border:1px solid black; margin-bottom:10px; cursor:pointer;" @onclick="() => OnProductSelected.InvokeAsync(product)">
+        <div>@product.Name</div>
+        <div>CENA: @product.Price zł</div>
+    </div>
+}
