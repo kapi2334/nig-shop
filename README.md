@@ -1,7 +1,3 @@
-# #Template
-
----
-
 # 1. Introduction
 
 ---
