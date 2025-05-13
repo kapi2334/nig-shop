@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("productService")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("adminApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b907ebf2ee6f6a44c13c1e7f9f84d40573a1daff")]
-[assembly: System.Reflection.AssemblyProductAttribute("productService")]
-[assembly: System.Reflection.AssemblyTitleAttribute("productService")]
+[assembly: System.Reflection.AssemblyProductAttribute("adminApp")]
+[assembly: System.Reflection.AssemblyTitleAttribute("adminApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Wygenerowane przez klasę WriteCodeFragment programu MSBuild.

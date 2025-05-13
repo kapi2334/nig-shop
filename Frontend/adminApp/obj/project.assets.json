@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kacper\\Desktop\\microservices\\adminApp\\adminApp.csproj",
+      "projectUniqueName": "C:\\Users\\Kacper\\Desktop\\microservices\\Frontend\\adminApp\\adminApp.csproj",
       "projectName": "adminApp",
-      "projectPath": "C:\\Users\\Kacper\\Desktop\\microservices\\adminApp\\adminApp.csproj",
+      "projectPath": "C:\\Users\\Kacper\\Desktop\\microservices\\Frontend\\adminApp\\adminApp.csproj",
       "packagesPath": "C:\\Users\\Kacper\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kacper\\Desktop\\microservices\\adminApp\\obj\\",
+      "outputPath": "C:\\Users\\Kacper\\Desktop\\microservices\\Frontend\\adminApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Kacper\\AppData\\Roaming\\NuGet\\NuGet.Config",

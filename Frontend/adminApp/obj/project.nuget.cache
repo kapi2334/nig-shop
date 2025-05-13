@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yIEz5JrN3N2D3jGdXPNsDgd3bli2lYYP29ym/dDBmj8LTaWMq+MH8Q0xjL+XudNLkszNy5A34QRgpI0055KfHg==",
+  "dgSpecHash": "zEip8q5CWgcwwHNZ20z9gl36b78APUmtymmZEP0qXZlPw5MDfy3PzWh0+45aLavG0VBygg7f9RhSg0iMzbprfg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kacper\\Desktop\\microservices\\adminApp\\adminApp.csproj",
+  "projectFilePath": "C:\\Users\\Kacper\\Desktop\\microservices\\Frontend\\adminApp\\adminApp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
