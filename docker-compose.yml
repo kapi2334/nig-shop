@@ -4,7 +4,7 @@ services:
   ############################UI Containers############################
   user-app:
     build:
-      context: ./clientApp
+      context: ./Frontend/clientApp
       dockerfile: Dockerfile
     container_name: clientApp 
     environment:
@@ -15,7 +15,7 @@ services:
       - ui 
   admin-app:
     build:
-      context: ./adminApp
+      context: ./Frontend/adminApp
       dockerfile: Dockerfile
     container_name: adminApp 
     environment:
