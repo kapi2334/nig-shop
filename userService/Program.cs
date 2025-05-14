@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
-=======
 
->>>>>>> 8a957fab34f1afb2b3e11f3f43522d5a91980e90
 var builder = WebApplication.CreateBuilder(args);
 
 
