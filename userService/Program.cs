@@ -26,7 +26,7 @@ app.MapGet("/api/usersService/users/{inputId}", (int inputId) =>
 app.MapDelete("/api/userService/users/{inputId}", (int inputId) =>
 {
     Console.WriteLine($"User deleted: {inputId}");
-    return Results.Ok()
+    return Results.Ok();
 })
 .WithName("removeUserFromDataBase")
 .WithOpenApi();
