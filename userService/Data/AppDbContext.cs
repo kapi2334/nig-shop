@@ -9,7 +9,7 @@ namespace UserService.Data
             : base(options)
         {
         }
-
+        //Database variables
         public DbSet<Address> addresses { get; set; }
         public DbSet<Company> companies { get; set; }
         public DbSet<Client> clients { get; set; }
