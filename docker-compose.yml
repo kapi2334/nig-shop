@@ -82,7 +82,7 @@ services:
       - "3002:5002" 
     networks:
       - backend
-############################################################################
+###############################nginx########################################
   nginx:
     build:
       context: /nginx
@@ -92,11 +92,70 @@ services:
       - "80:80"
     networks:
       - ui
-
-
+###############################Databases#####################################
+  user-service-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+      POSTGRES_DB: userservice
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - .db/init.sql:/docker-entrypoint.d/init.sql
+    ports:
+      - "5401"
+    networks:
+      - db
+  product-service-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+      POSTGRES_DB: productservice
+    ports:
+      - "5402"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - .db/init.sql:/docker-entrypoint.d/init.sql
+    networks:
+      - db
+    
+  invoice-service-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+      POSTGRES_DB: invoiceservice 
+    ports:
+      - "5403"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - .db/init.sql:/docker-entrypoint.d/init.sql
+    networks:
+      - db
+  
+  order-service-db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+      POSTGRES_DB: orderservice 
+    ports:
+      - "5404"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - .db/init.sql:/docker-entrypoint.d/init.sql
+    networks:
+      - db     
+      
+###############################Networks definitions##########################
 networks:
   backend:
     driver: bridge
   ui:
     driver: bridge
+  db:
+    driver: bridge
+volumes:
+  postgres_data:   
 
