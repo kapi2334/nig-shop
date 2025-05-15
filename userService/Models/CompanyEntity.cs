@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using userService.Models.Interfaces;
+using UserService.Models.Interfaces;
+using UserService.Models.Abstract;
 
 namespace UserService.Models
 {
@@ -10,7 +11,7 @@ namespace UserService.Models
         public int id { get; set; }
 
         [ForeignKey("FirmaId")]
-        public IUserType user { get; set; }
+        public UserType user { get; set; }
 
         [Column("adres_id")]
         public int addressId { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserService.Models;
+using UserService.Models.Abstract;
 
 namespace UserService.Data
 {
@@ -11,9 +12,12 @@ namespace UserService.Data
         }
         //Database variables
         public DbSet<Address> addresses { get; set; }
-        public DbSet<Company> companies { get; set; }
         public DbSet<Client> clients { get; set; }
-
+        public DbSet<Company> companies {get; set;}
+        
+        //Table for Client+Company join
+        public DbSet<UserType> users {get;set;} 
+        
         public DbSet<CompanyEntity> companyEntities { get; set; }
         public DbSet<ClientEntity> clientEntities { get; set; }
 
@@ -44,6 +48,10 @@ namespace UserService.Data
                 .HasOne(oa => oa.address)
                 .WithMany(a => a.companiesEntities)
                 .HasForeignKey(oa => oa.addressId);
+            modelBuilder.Entity<UserType>().ToTable("Users");
+            modelBuilder.Entity<Client>().ToTable("Clients");
+            modelBuilder.Entity<Company>().ToTable("Companies");
+
 
         }
     }

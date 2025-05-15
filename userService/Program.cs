@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
 using UserService.Models;
-using userService.Models.Interfaces;
+using UserService.Models.Interfaces;
+using UserService.Models.Abstract;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/api/userService/users/all",async(AppDbContext db)=>
 {
     try{
-        var users = await db.clients.ToListAsync();
+        var users = await db.users.ToListAsync();
         return Results.Ok(users);
     }
     catch(Exception e){
@@ -37,13 +38,13 @@ app.MapGet("/api/userService/users/all",async(AppDbContext db)=>
 app.MapGet("/api/userService/users/{inputId}", async(int inputId, AppDbContext db) =>
 {
     //Variable to save choosen in ticket user.
-    IUserType outputUser = null;
+    //UserType outputUser = null;
     try{
         //Getting users from db
-        IEnumerable<IUserType> users = await db.clients.ToListAsync();
+        IEnumerable<UserType> users = await db.users.ToListAsync();
         //Gets first user that has id = inputId
-        //outputUser = db.clients.FindAsync(inputId); 
-        if(outputUser is not null){
+        var outputUser = db.users.FindAsync(inputId); 
+        if(outputUser != null){
             return Results.Ok(outputUser);
         }
         else
@@ -63,11 +64,11 @@ app.MapGet("/api/userService/users/{inputId}", async(int inputId, AppDbContext d
 //removing user from db
 app.MapDelete("/api/userService/users/{inputId}", async(int inputId, AppDbContext db) =>
 {
-    IUserType userToDelete;
+    //UserType userToDelete;
     try{
-        userToDelete = await db.clients.FindAsync(inputId);
+        var userToDelete = await db.users.FindAsync(inputId);
         if(userToDelete is not null){
-           // db.clients.Remove(userToDelete);
+            db.users.Remove(userToDelete);
             db.SaveChangesAsync();
             return Results.Ok($"User {inputId} successfully deleted. Changes has been saved to userService database.");
         }else{

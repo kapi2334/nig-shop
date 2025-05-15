@@ -1,12 +1,13 @@
 ﻿using UserService.Models;
+using UserService.Models.Abstract;
 
-namespace userService.Models.Interfaces
+namespace UserService.Models.Interfaces
 {
     internal interface IEntity
     {
         public int id { get; set; }
 
-        public IUserType user {  get; set; }
+        public UserType user {  get; set; }
 
         public int addressId { get; set; }
 
