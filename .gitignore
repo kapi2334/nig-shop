@@ -1,1 +1,16 @@
-userService/userService.sln
+userService/bin/
+userService/obj/
+
+productService/bin/
+productService/obj/
+
+paymentService/bin/
+paymentService/obj/
+
+orderService/bin/
+orderService/obj/
+
+
+invoiceService/bin/
+invoiceService/obj/
+
