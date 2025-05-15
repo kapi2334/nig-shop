@@ -1,23 +1,30 @@
 userService/bin/
 userService/obj
 userService/bin/Debug/net8.0
+userService/.vs
 
 productService/bin/
 productService/obj/
+productService/.vs
 
 paymentService/bin/
 paymentService/obj/
+productService/.vs/
 
 orderService/bin/
 orderService/obj/
+orderService/.vs/
 
 
 invoiceService/bin/
-invoiceService/obj
+invoiceService/obj/
+invoiceService/.vs/
 
-Frontend/adminApp/bin
-Frontend/adminApp/obj
+Frontend/adminApp/bin/
+Frontend/adminApp/obj/
+Frontend/adminApp/.vs/
 
-Frontend/clientApp/bin
-Frontend/clientApp/obj
+Frontend/clientApp/bin/
+Frontend/clientApp/obj/
+Frontend/clientApp/.vs/
 
