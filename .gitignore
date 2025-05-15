@@ -1,5 +1,6 @@
 userService/bin/
-userService/obj/
+userService/obj
+userService/bin/Debug/net8.0
 
 productService/bin/
 productService/obj/
@@ -12,5 +13,11 @@ orderService/obj/
 
 
 invoiceService/bin/
-invoiceService/obj/
+invoiceService/obj
+
+Frontend/adminApp/bin
+Frontend/adminApp/obj
+
+Frontend/clientApp/bin
+Frontend/clientApp/obj
 
