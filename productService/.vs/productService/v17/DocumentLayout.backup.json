@@ -1,0 +1,122 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\models\\surfacetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:models\\surfacetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\models\\material.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:models\\material.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\models\\dimensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:models\\dimensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|c:\\users\\kacpe\\desktop\\pliki projekt pytlik\\productservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF249D30-78E7-8691-79B8-62FDF6476A25}|productService.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "product.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\product.cs",
+              "RelativeDocumentMoniker": "Models\\product.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\product.cs",
+              "RelativeToolTip": "Models\\product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:39:59.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "material.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\material.cs",
+              "RelativeDocumentMoniker": "Models\\material.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\material.cs",
+              "RelativeToolTip": "Models\\material.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:39:57.097Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "dimensions.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\dimensions.cs",
+              "RelativeDocumentMoniker": "Models\\dimensions.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\dimensions.cs",
+              "RelativeToolTip": "Models\\dimensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:39:43.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "surfaceType.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\surfaceType.cs",
+              "RelativeDocumentMoniker": "Models\\surfaceType.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Models\\surfaceType.cs",
+              "RelativeToolTip": "Models\\surfaceType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:40:05.756Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAA7wCcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:38:52.989Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Kacpe\\Desktop\\PLIKI PROJEKT PYTLIK\\productService\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T13:35:46.697Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
