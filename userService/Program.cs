@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
+using userService.Models.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,9 +39,39 @@ app.MapGet("/api/userService/users/all",async(AppDbContext db)=>
 .WithOpenApi();
 //Getting user data from db
 
-app.MapGet("/api/userService/users/{inputId}", (int inputId) =>
+app.MapGet("/api/userService/users/{inputId}", async(int inputId, AppDbContext db) =>
 {
-    return Results.Ok($"Called action.Called user {inputId} ");
+    //Variable to save choosen in ticket user.
+    IUserType outputUser = null;
+    //Try to connect if db is avaiable
+    try{
+        //Getting users from db
+        IEnumerable<IUserType> users = await db.clients.ToListAsync();
+        foreach(IUserType user in users){
+            if(user.id == inputId){
+            //Saving user with specified id;
+                outputUser = user;
+            }
+        }
+        //If the user was found - return it.
+        if(outputUser is not null){
+            return Results.Ok(outputUser);
+        }
+        //If not - return an error
+        else
+        {
+            return Results.NotFound();
+        }
+    }
+    //When db is unavaiable...
+    catch(Exception e){
+        Console.WriteLine($"Fatal error during proccess of connecting to dataBase:{e.Message}");
+        return Results.Problem(
+            detail: "Can't connect to userService database.",
+            statusCode: StatusCodes.Status503ServiceUnavailable
+        );
+    }
+
 })
 .WithName("addUserToDataBase")
 .WithOpenApi();
@@ -56,7 +87,6 @@ app.MapDelete("/api/userService/users/{inputId}", (int inputId) =>
     {
         //When db is not responding...
         throw new System.NotImplementedException();
-        
 
     }
    })
