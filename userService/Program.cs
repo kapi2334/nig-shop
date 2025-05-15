@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
+using UserService.Models;
 using userService.Models.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,13 +27,8 @@ app.MapGet("/api/userService/users/all",async(AppDbContext db)=>
         return Results.Ok(users);
     }
     catch(Exception e){
-        //When db is unavaiable...
-        Console.WriteLine($"Fatal error during proccess of connecting to dataBase:{e.Message}");
-        return Results.Problem(
-            detail: "Can't connect to userService database.",
-            statusCode: StatusCodes.Status503ServiceUnavailable
-        );
-    }
+        return MyResults.dbIsNotAvaiable(e.Message);
+   }
 })
 .WithName("getAllUsers")
 .WithOpenApi();
@@ -43,33 +38,22 @@ app.MapGet("/api/userService/users/{inputId}", async(int inputId, AppDbContext d
 {
     //Variable to save choosen in ticket user.
     IUserType outputUser = null;
-    //Try to connect if db is avaiable
     try{
         //Getting users from db
         IEnumerable<IUserType> users = await db.clients.ToListAsync();
-        foreach(IUserType user in users){
-            if(user.id == inputId){
-            //Saving user with specified id;
-                outputUser = user;
-            }
-        }
-        //If the user was found - return it.
+        //Gets first user that has id = inputId
+        //outputUser = db.clients.FindAsync(inputId); 
         if(outputUser is not null){
             return Results.Ok(outputUser);
         }
-        //If not - return an error
         else
         {
             return Results.NotFound();
         }
     }
-    //When db is unavaiable...
     catch(Exception e){
-        Console.WriteLine($"Fatal error during proccess of connecting to dataBase:{e.Message}");
-        return Results.Problem(
-            detail: "Can't connect to userService database.",
-            statusCode: StatusCodes.Status503ServiceUnavailable
-        );
+        //When db is unavaiable...
+        return MyResults.dbIsNotAvaiable(e.Message);
     }
 
 })
@@ -77,26 +61,33 @@ app.MapGet("/api/userService/users/{inputId}", async(int inputId, AppDbContext d
 .WithOpenApi();
 
 //removing user from db
-app.MapDelete("/api/userService/users/{inputId}", (int inputId) =>
+app.MapDelete("/api/userService/users/{inputId}", async(int inputId, AppDbContext db) =>
 {
+    IUserType userToDelete;
     try{
-        Console.WriteLine($"User deleted: {inputId}");
-        return Results.Ok($"Successfully deleted user with ID: {inputId}");
-    }
-    catch(Exception ex)
-    {
-        //When db is not responding...
-        throw new System.NotImplementedException();
+        userToDelete = await db.clients.FindAsync(inputId);
+        if(userToDelete is not null){
+           // db.clients.Remove(userToDelete);
+            db.SaveChangesAsync();
+            return Results.Ok($"User {inputId} successfully deleted. Changes has been saved to userService database.");
+        }else{
 
+            return Results.NotFound();
+
+        }
     }
-   })
+    catch(Exception ex){
+        //When db is not responding...
+        return MyResults.dbIsNotAvaiable(ex.Message); 
+    }
+})
 .WithName("removeUserFromDataBase")
 .WithOpenApi();
 
 //Adding new user into database 
 app.MapPost("/api/userService/users", () =>
 {
-
+    return MyResults.dbIsNotAvaiable(" "); 
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
