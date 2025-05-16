@@ -1,4 +1,4 @@
-namespace ProduktService.Models{
+namespace ProductService.Models{
     //This class is used to create a full-fledged product class later. 
     //It eliminates the need to provide all values for material and surface - and allows only their id from the database.
     internal class ProductDto{
