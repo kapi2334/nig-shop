@@ -19,19 +19,19 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // relacja produkt → wymiary
+        // relation product → dimentions
         modelBuilder.Entity<Product>()
             .HasOne(p => p.dimensions)
             .WithMany()
             .HasForeignKey(p => p.dimensionsId);
 
-        // relacja produkt → material
+        // relation product → materials
         modelBuilder.Entity<Product>()
             .HasOne(p => p.material)
             .WithMany()
             .HasForeignKey(p => p.materialId);
 
-        // relacja produkt → typ nawierzchni
+        // relation product → surfaceType
         modelBuilder.Entity<Product>()
             .HasOne(p => p.surfaceType)
             .WithMany()
