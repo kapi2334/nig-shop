@@ -2,8 +2,8 @@ using OrderService.Models;
 using OrderService.Data;
 namespace OrderService.Endpoints{
 
-    internal static class OrdersDTOEndpoints{
-        public static IEndpointRouteBuilder MapOrdersEndpoints(this IEndpointRouteBuilder endpoints){
+    internal static class ProductsEndpoints{
+        public static IEndpointRouteBuilder MapProductsEndpoints(this IEndpointRouteBuilder endpoints){
             
 
             return endpoints;
