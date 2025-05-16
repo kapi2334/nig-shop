@@ -37,6 +37,8 @@ services:
       - "3001:5001" 
     networks:
       - backend
+    depends_on:
+      - user-service-db 
 
   product-service:
     build:

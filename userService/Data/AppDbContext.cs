@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Net;
 using UserService.Models;
 using UserService.Models.Abstract;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UserService.Data
 {
@@ -10,49 +12,52 @@ namespace UserService.Data
             : base(options)
         {
         }
-        //Database variables
+
+        // Database variables (DbSety)
         public DbSet<Address> addresses { get; set; }
         public DbSet<Client> clients { get; set; }
-        public DbSet<Company> companies {get; set;}
-        
-        //Table for Client+Company join
-        public DbSet<UserType> users {get;set;} 
-        
+        public DbSet<Company> companies { get; set; }
+
+        // Join table: client+company
+        public DbSet<UserType> users { get; set; }
+
         public DbSet<CompanyEntity> companyEntities { get; set; }
         public DbSet<ClientEntity> clientEntities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Konfiguracja kluczy i relacji dla clientEntity
             modelBuilder.Entity<ClientEntity>()
-                .HasKey(fa => new { fa.id, fa.addressId });
+                .HasKey(e => new { e.id, e.addressId });
 
             modelBuilder.Entity<ClientEntity>()
-                    .HasOne(oa => oa.user)
-                    .WithMany(c => (List<ClientEntity>)c.address)
-                    .HasForeignKey(oa => oa.id);
+                .HasOne(e => e.user)
+                .WithMany(u => (ICollection<ClientEntity>)u.address) // rzutowanie na ICollection
+                .HasForeignKey(e => e.id);
 
             modelBuilder.Entity<ClientEntity>()
-                .HasOne(oa => oa.address)
+                .HasOne(e => e.address)
                 .WithMany(a => a.clientsEntities)
-                .HasForeignKey(oa => oa.addressId);
+                .HasForeignKey(e => e.addressId);
+
+            // Konfiguracja kluczy i relacji dla companyEntity
+            modelBuilder.Entity<CompanyEntity>()
+                .HasKey(e => new { e.id, e.addressId });
 
             modelBuilder.Entity<CompanyEntity>()
-                .HasKey(fa => new { fa.id, fa.addressId });
+                .HasOne(e => e.user)
+                .WithMany(u => (ICollection<CompanyEntity>)u.address)
+                .HasForeignKey(e => e.id);
 
             modelBuilder.Entity<CompanyEntity>()
-                    .HasOne(oa => oa.user)
-                    .WithMany(c => (List<CompanyEntity>)c.address)
-                    .HasForeignKey(oa => oa.id);
-
-            modelBuilder.Entity<CompanyEntity>()
-                .HasOne(oa => oa.address)
+                .HasOne(e => e.address)
                 .WithMany(a => a.companiesEntities)
-                .HasForeignKey(oa => oa.addressId);
-            modelBuilder.Entity<UserType>().ToTable("Users");
-            modelBuilder.Entity<Client>().ToTable("Clients");
-            modelBuilder.Entity<Company>().ToTable("Companies");
+                .HasForeignKey(e => e.addressId);
 
-
+            // Konfiguracja nazw tabel
+            modelBuilder.Entity<UserType>().ToTable("users");
+            modelBuilder.Entity<Client>().ToTable("clients");
+            modelBuilder.Entity<Company>().ToTable("companies");
         }
     }
 }
