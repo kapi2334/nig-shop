@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ProduktService.Data;
-using ProduktService.Models;
+using ProductService.Data;
+using ProductService.Models;
 using ProduktService.Endpoints;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions

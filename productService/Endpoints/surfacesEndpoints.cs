@@ -1,6 +1,6 @@
-using ProduktService.Models;
-using ProduktService.Data;
-namespace ProduktService.Endpoints{
+using ProductService.Models;
+using ProductService.Data;
+namespace ProductService.Endpoints{
 
     internal static class SurfacesEndpoints{
         public static IEndpointRouteBuilder MapSurfacesEndpoints(this IEndpointRouteBuilder endpoints){

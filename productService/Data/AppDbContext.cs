@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProduktService.Models;
 
-namespace ProduktService.Data;
+namespace ProductService.Data;
 
 public class AppDbContext : DbContext
 {
