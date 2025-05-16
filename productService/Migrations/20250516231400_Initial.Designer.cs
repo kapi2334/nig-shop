@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ProduktService.Data;
+using ProductService.Data;
 
 #nullable disable
 
-namespace productService.Persistence.Migrations
+namespace productService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250516220005_Initial")]
+    [Migration("20250516231400_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace productService.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ProduktService.Models.Dimensions", b =>
+            modelBuilder.Entity("ProductService.Models.Dimensions", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace productService.Persistence.Migrations
                     b.ToTable("wymiary");
                 });
 
-            modelBuilder.Entity("ProduktService.Models.Material", b =>
+            modelBuilder.Entity("ProductService.Models.Material", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace productService.Persistence.Migrations
                     b.ToTable("material");
                 });
 
-            modelBuilder.Entity("ProduktService.Models.Product", b =>
+            modelBuilder.Entity("ProductService.Models.Product", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +115,7 @@ namespace productService.Persistence.Migrations
                     b.ToTable("produkt");
                 });
 
-            modelBuilder.Entity("ProduktService.Models.SurfaceType", b =>
+            modelBuilder.Entity("ProductService.Models.SurfaceType", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -134,21 +134,21 @@ namespace productService.Persistence.Migrations
                     b.ToTable("typnawierzchni");
                 });
 
-            modelBuilder.Entity("ProduktService.Models.Product", b =>
+            modelBuilder.Entity("ProductService.Models.Product", b =>
                 {
-                    b.HasOne("ProduktService.Models.Dimensions", "dimensions")
+                    b.HasOne("ProductService.Models.Dimensions", "dimensions")
                         .WithMany()
                         .HasForeignKey("dimensionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProduktService.Models.Material", "material")
+                    b.HasOne("ProductService.Models.Material", "material")
                         .WithMany()
                         .HasForeignKey("materialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProduktService.Models.SurfaceType", "surfaceType")
+                    b.HasOne("ProductService.Models.SurfaceType", "surfaceType")
                         .WithMany()
                         .HasForeignKey("surfaceTypeId")
                         .OnDelete(DeleteBehavior.Cascade)

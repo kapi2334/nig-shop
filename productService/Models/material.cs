@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProduktService.Models;
+namespace ProductService.Models;
 
 [Table("material")]
 public class Material

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProduktService.Models;
+using ProductService.Models;
+using ProductService.Models;
 
 namespace ProductService.Data;
 

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProduktService.Models;
+namespace ProductService.Models;
 
 [Table("typnawierzchni")]
 public class SurfaceType
