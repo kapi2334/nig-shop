@@ -53,6 +53,8 @@ services:
     networks:
       - db
       - backend
+    depends_on:
+      - product-service-db 
   payment-service:
     build:
       context: ./paymentService
@@ -77,6 +79,8 @@ services:
     networks:
       - backend
       - db
+    depends_on:
+      - order-service-db 
   invoice-service:
     build:
       context: ./invoiceService
@@ -89,6 +93,8 @@ services:
     networks:
       - backend
       - db
+    depends_on:
+      - invoice-service-db
 ###############################nginx########################################
   nginx:
     build:
