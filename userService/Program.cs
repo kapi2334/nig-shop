@@ -90,8 +90,17 @@ app.MapPost("/api/userService/users", () =>
 {
     return MyResults.dbIsNotAvaiable(" "); 
 })
-.WithName("GetWeatherForecast")
+.WithName("addUserToDatabase")
 .WithOpenApi();
+
+//Adding new user into database 
+app.MapPost("/api/userService/companies", () =>
+{
+    return MyResults.dbIsNotAvaiable(" "); 
+})
+.WithName("addCompanyToDatabase")
+.WithOpenApi();
+
 
 app.Run();
 
