@@ -29,7 +29,9 @@ namespace UserService.Models
         [Column("kraj")]
         public string country { get; set; }
 
-        public ICollection<CompanyEntity> companiesEntities { get; set; }
-        public ICollection<ClientEntity> clientsEntities { get; set; }
+        public int? UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
     }
 }

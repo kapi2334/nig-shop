@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using UserService.Models.Interfaces;
-using UserService.Models.Abstract;
 using UserService.Models;
 
 namespace UserService.Models
 {
-    [Table("osobafizyczna")]
+    [Table("podmiot")]
     internal class User
     {
         [Key]
@@ -20,6 +18,7 @@ namespace UserService.Models
         public string passwordHash { get; set; }
 
         public int addressID { get; set; }
+        public ICollection<Address> Addresses { get; set; }
 
         [Column("nip")]
         public  long? nip { get; set; }
