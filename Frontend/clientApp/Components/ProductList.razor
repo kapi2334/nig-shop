@@ -1,16 +1,45 @@
+@using System.Net.Http.Json
+@using NigShop.Shared.Models
+
+@inject HttpClient Http
+
 @code {
     [Parameter] public EventCallback<Product> OnProductSelected { get; set; }
 
-    List<Product> products = new()
+    private List<Product> products = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new Product { Id = 1, Name = "Cegła 900", Price = 2137 }
-    };
+        try
+        {
+            products = await Http.GetFromJsonAsync<List<Product>>("http://localhost:3000/products") ?? new List<Product>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Błąd podczas pobierania produktów: {ex.Message}");
+        }
+    }
+
+
 }
 
-@foreach (var product in products)
+@if (products.Count == 0)
 {
-    <div style="border:1px solid black; margin-bottom:10px; cursor:pointer;" @onclick="() => OnProductSelected.InvokeAsync(product)">
-        <div>@product.Name</div>
-        <div>CENA: @product.Price zł</div>
-    </div>
+    <p>Ładowanie produktów...</p>
+}
+else
+{
+    @foreach (var product in products)
+    {
+        <div style="border:1px solid black; margin-bottom:10px; padding:10px; cursor:pointer;"
+             @onclick="() => OnProductSelected.InvokeAsync(product)">
+            <div><strong>@product.Name</strong> (@product.Type)</div>
+            <div>CENA: @product.Price zł</div>
+            <div>Podatek: @product.Tax zł</div>
+            <div>Waga: @product.Weight kg</div>
+            <div>Wymiary: @product.Dimensions.Length x @product.Dimensions.Width x @product.Dimensions.Height cm</div>
+            <div>Materiał: @product.Material.Name</div>
+            <div>Typ powierzchni: @product.SurfaceType.Name</div>
+        </div>
+    }
 }

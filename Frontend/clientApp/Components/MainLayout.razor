@@ -1,13 +1,16 @@
+@using NigShop.Shared.Models
 @inherits LayoutComponentBase
 
 <div style="display: flex; height: 100vh;">
     <div style="width: 20%; border-right: 2px solid black; padding: 10px;">
         <ProductList OnProductSelected="EventCallback.Factory.Create<Product>(this, OnProductSelected)" />
+
+
     </div>
 
-    <div style="width: 60%; padding: 10px;">
+@*     <div style="width: 60%; padding: 10px;">
         <ProductDetail Product="SelectedProduct" OnAddToCart="EventCallback.Factory.Create<Product>(this, AddToCart)" />
-    </div>
+    </div> *@
 
     <div style="width: 20%; border-left: 2px solid black; padding: 10px;">
         <Cart CartItems="CartItems" OnUpdateQuantity="EventCallback.Factory.Create<(int, int)>(this, UpdateQuantity)" />
