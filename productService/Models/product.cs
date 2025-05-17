@@ -19,7 +19,10 @@ public class Product
 
     [Column("waga")]
     public double weight { get; set; }
-
+    [Column("cena")]
+    public float price { get; set; }
+    [Column("podatek")]
+    public int tax { get; set; }
     [Column("wymiary_id")]
     public int dimensionsId { get; set; }
 

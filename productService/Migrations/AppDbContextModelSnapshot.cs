@@ -88,9 +88,17 @@ namespace productService.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nazwa");
 
+                    b.Property<float>("price")
+                        .HasColumnType("real")
+                        .HasColumnName("cena");
+
                     b.Property<int>("surfaceTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("typ_nawierzchni_id");
+
+                    b.Property<int>("tax")
+                        .HasColumnType("integer")
+                        .HasColumnName("podatek");
 
                     b.Property<string>("type")
                         .IsRequired()

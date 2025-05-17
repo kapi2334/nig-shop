@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace productService.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,6 +61,8 @@ namespace productService.Migrations
                     nazwa = table.Column<string>(type: "text", nullable: false),
                     rodzaj = table.Column<string>(type: "text", nullable: false),
                     waga = table.Column<double>(type: "double precision", nullable: false),
+                    cena = table.Column<float>(type: "real", nullable: false),
+                    podatek = table.Column<int>(type: "integer", nullable: false),
                     wymiary_id = table.Column<int>(type: "integer", nullable: false),
                     material_id = table.Column<int>(type: "integer", nullable: false),
                     typ_nawierzchni_id = table.Column<int>(type: "integer", nullable: false)

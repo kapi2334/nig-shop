@@ -11,8 +11,8 @@ using ProductService.Data;
 namespace productService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250516231400_Initial")]
-    partial class Initial
+    [Migration("20250517163054_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,9 +91,17 @@ namespace productService.Migrations
                         .HasColumnType("text")
                         .HasColumnName("nazwa");
 
+                    b.Property<float>("price")
+                        .HasColumnType("real")
+                        .HasColumnName("cena");
+
                     b.Property<int>("surfaceTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("typ_nawierzchni_id");
+
+                    b.Property<int>("tax")
+                        .HasColumnType("integer")
+                        .HasColumnName("podatek");
 
                     b.Property<string>("type")
                         .IsRequired()
