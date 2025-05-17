@@ -1,27 +1,19 @@
-using clientApp.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components;
+using clientApp;
+using clientApp.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+// Configure HttpClient
+builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddLogging(logging => logging.SetMinimumLevel(LogLevel.Debug));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-app.UseAntiforgery();
-
-app.MapRazorComponents<MainLayout>()
-    .AddInteractiveServerRenderMode();
-
-app.Run();
+// Enable console logging for debugging
+await app.RunAsync(); 

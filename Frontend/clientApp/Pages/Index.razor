@@ -1,0 +1,138 @@
+@page "/"
+@using clientApp.Models
+@using clientApp.Services
+@inject ProductService ProductService
+@inject ILogger<Index> Logger
+
+<div class="container-fluid">
+    <div class="row" style="height: 100vh;">
+        <!-- Left Panel - Product List -->
+        <div class="col-4 border-end p-3" style="height: 100%; overflow-y: auto;">
+            <h3>Products</h3>
+            @if (error != null)
+            {
+                <div class="alert alert-danger">
+                    Error loading products: @error
+                </div>
+            }
+            else if (products == null)
+            {
+                <p>Loading products...</p>
+            }
+            else if (!products.Any())
+            {
+                <p>No products available.</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var product in products)
+                    {
+                        <button class="list-group-item list-group-item-action @(selectedProduct?.Id == product.Id ? "active" : "")"
+                                @onclick="() => SelectProduct(product)">
+                            @product.Name (@product.Id)
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Center Panel - Product Details -->
+        <div class="col-4 border-end p-3" style="height: 100%; overflow-y: auto;">
+            <h3>Product Details</h3>
+            @if (selectedProduct != null)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@selectedProduct.Name</h5>
+                        <p class="card-text">
+                            <strong>ID:</strong> @selectedProduct.Id<br />
+                            <strong>Type:</strong> @selectedProduct.Type<br />
+                            <strong>Weight:</strong> @selectedProduct.Weight kg<br />
+                            <strong>Price:</strong> $@selectedProduct.Price<br />
+                            <strong>Tax:</strong> @selectedProduct.Tax%<br />
+                        </p>
+                        <h6>Dimensions:</h6>
+                        <p>
+                            Length: @selectedProduct.Dimensions.Length<br />
+                            Width: @selectedProduct.Dimensions.Width<br />
+                            Height: @selectedProduct.Dimensions.Height
+                        </p>
+                        <p>
+                            <strong>Material:</strong> @selectedProduct.Material.Name<br />
+                            <strong>Surface Type:</strong> @selectedProduct.SurfaceType.Name
+                        </p>
+                        <button class="btn btn-primary" @onclick="() => AddToOrder(selectedProduct)">
+                            Add to Order
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Right Panel - Order List -->
+        <div class="col-4 p-3" style="height: 100%; overflow-y: auto;">
+            <h3>Current Order</h3>
+            @if (!orderProducts.Any())
+            {
+                <p>No products in order</p>
+            }
+            else
+            {
+                <div class="list-group">
+                    @foreach (var product in orderProducts)
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>@product.Name</span>
+                                <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromOrder(product)">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="mt-3">
+                    <h5>Total: $@orderProducts.Sum(p => p.Price)</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Product>? products;
+    private Product? selectedProduct;
+    private List<Product> orderProducts = new();
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Logger.LogInformation("Initializing Index page");
+            products = await ProductService.GetProductsAsync();
+            Logger.LogInformation($"Loaded {products?.Count ?? 0} products");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading products");
+            error = ex.Message;
+        }
+    }
+
+    private void SelectProduct(Product product)
+    {
+        selectedProduct = product;
+    }
+
+    private void AddToOrder(Product product)
+    {
+        orderProducts.Add(product);
+    }
+
+    private void RemoveFromOrder(Product product)
+    {
+        orderProducts.Remove(product);
+    }
+} 
