@@ -16,7 +16,7 @@ namespace InvoiceService.Endpoints{
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                    var items = db.issuer
+                    var items = db.Issuer
                     .Include(i => i.invoices)
                         .ThenInclude(i => i.products)
                     .OrderByDescending(x => x.id)
@@ -42,7 +42,7 @@ namespace InvoiceService.Endpoints{
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var newIssuer = db.issuer.Add(input); 
+                var newIssuer = db.Issuer.Add(input); 
                 if(newIssuer is not null){
                     await db.SaveChangesAsync();    
                     return Results.Ok($"Successfully added new issuer to db with id: {newIssuer.Entity.id}. Provided data will be used in newly created invoices.");

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace invoiceService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517173609_InitialCreate")]
+    [Migration("20250517175436_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,9 +52,8 @@ namespace invoiceService.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("klient_nrdomu");
 
-                    b.Property<string>("clientNIP")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<long?>("clientNIP")
+                        .HasColumnType("bigint")
                         .HasColumnName("klient_nip");
 
                     b.Property<string>("clientName")
