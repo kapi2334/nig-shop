@@ -30,5 +30,8 @@ namespace InvoiceService.Models
 
         [Column("faktura_id")]
         public int invoiceId { get; set; }
+
+        [Column("produkt_id")]
+        public int product_id { get; set; }
     }
 }
