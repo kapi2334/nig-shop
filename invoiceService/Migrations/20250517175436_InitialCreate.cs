@@ -45,7 +45,7 @@ namespace invoiceService.Migrations
                     klient_kodpocztowy = table.Column<string>(type: "text", nullable: false),
                     klient_miasto = table.Column<string>(type: "text", nullable: false),
                     klient_kraj = table.Column<string>(type: "text", nullable: false),
-                    klient_nip = table.Column<string>(type: "text", nullable: false),
+                    klient_nip = table.Column<long>(type: "bigint", nullable: true),
                     datawystawienia = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     terminplatnosci = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     rodzajplatnosci = table.Column<string>(type: "text", nullable: false),

@@ -19,7 +19,7 @@ namespace InvoiceService.Endpoints
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var items = db.invoice
+                var items = db.Invoice
                 .Include(i => i.issuer) 
                 .Include(i => i.products) 
                 .ToList();
@@ -45,7 +45,7 @@ namespace InvoiceService.Endpoints
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var item = await db.invoice
+                var item = await db.Invoice
                 .Include(i => i.issuer) 
                 .Include(i => i.products) 
                 .FirstOrDefaultAsync(i => i.id == inputId);
@@ -71,7 +71,7 @@ namespace InvoiceService.Endpoints
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var deleted = db.invoice.Remove(db.invoice.Find(inputId));
+                var deleted = db.Invoice.Remove(db.Invoice.Find(inputId));
                 if (deleted is not null)
                 {
                     db.SaveChangesAsync();

@@ -7,9 +7,9 @@ namespace InvoiceService.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Issuer> issuer { get; set; }
-        public DbSet<Invoice> invoice { get; set; }
-        public DbSet<ProductInfo> productInfo { get; set; }
+        public DbSet<Issuer> Issuer { get; set; }
+        public DbSet<Invoice> Invoice { get; set; }
+        public DbSet<ProductInfo> ProductInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

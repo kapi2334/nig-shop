@@ -49,9 +49,8 @@ namespace invoiceService.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("klient_nrdomu");
 
-                    b.Property<string>("clientNIP")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<long?>("clientNIP")
+                        .HasColumnType("bigint")
                         .HasColumnName("klient_nip");
 
                     b.Property<string>("clientName")
