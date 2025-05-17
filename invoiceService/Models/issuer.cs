@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InvoiceService.Models
 {
     [Table("wystawca")]
-    public class Issuer
+    internal class Issuer
     {
         [Key]
         [Column("id")]

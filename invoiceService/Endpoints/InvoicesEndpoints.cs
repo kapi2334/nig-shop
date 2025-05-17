@@ -1,6 +1,9 @@
 using InvoiceService.Models;
+using InvoiceService.Models.Services;
 using InvoiceService.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace InvoiceService.Endpoints
 {
@@ -86,7 +89,7 @@ namespace InvoiceService.Endpoints
             .WithOpenApi();
 
             // POST
-            endpoints.MapPost("/invoices", async (InvoiceDto input, AppDbContext db) =>
+            endpoints.MapPost("/invoices/", async (InvoiceDto input, AppDbContext db) =>
             {
                 if (!db.Database.CanConnect())
                 {
@@ -97,9 +100,15 @@ namespace InvoiceService.Endpoints
                 }
                 try
                 {
-                    // New occurrence added.
-                    await db.SaveChangesAsync();
-                    // Returning id
+                    if (endpoints is WebApplication app){
+                        var apiService = app.Services.GetRequiredService<ApiService>();
+                        Invoice outInvoice = new Invoice();
+                        await outInvoice.BuildProductInfosAsync(input.products, apiService);
+                        return Results.Ok($"o:{outInvoice.products}.");
+                    }else{
+                        return Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "Cant access httpService");
+                    } 
+
                     return Results.Ok();
                 }
                 catch (Exception ex)

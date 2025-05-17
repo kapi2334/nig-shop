@@ -8,6 +8,8 @@ namespace ProductService.Models{
        public int dimensionsId {get;set;}
        public int materialId {get;set;}
        public int surfaceTypeId{get;set;}
+       public int price {get;set;}
+       public int tax {get;set;}
     }
 
 

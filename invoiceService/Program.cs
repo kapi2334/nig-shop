@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using InvoiceService.Data;
 using InvoiceService.Endpoints;
+using InvoiceService.Models.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -12,6 +13,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient<ApiService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

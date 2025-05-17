@@ -18,7 +18,7 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var items = db.users.ToList();
+                    var items = db.Users.ToList();
                     if (items is not null)
                     {
                         return Results.Ok(items);
@@ -41,7 +41,7 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var item = await db.users.FindAsync(inputId);
+                    var item = await db.Users.FindAsync(inputId);
                     if (item is not null)
                     {
                         return Results.Ok(item);
@@ -64,7 +64,7 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var deleted = db.users.Remove(db.users.Find(inputId));
+                    var deleted = db.Users.Remove(db.Users.Find(inputId));
                     if (deleted is not null)
                     {
                         db.SaveChangesAsync();

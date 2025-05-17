@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvoiceService.Models
 {
-    public class ProductDto
+    internal class ProductDto
     {
         public int productId {get;set;}
         public int amount {get; set;}

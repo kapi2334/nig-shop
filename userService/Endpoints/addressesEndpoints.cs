@@ -1,11 +1,13 @@
 using UserService.Models;
+using UserService.Models.Builders;
 using UserService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserService.Endpoints
 {
     internal static class addressesEndpoints
     {
-        public static IEndpointRouteBuilder MapaddressesEndpoints(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder MapAddressesEndpoints(this IEndpointRouteBuilder endpoints)
         {
             //////////////Address/////////////////////////
             //GET
@@ -18,7 +20,10 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var items = db.addresses.ToList();
+                    var items = db.Address
+                    .Include(a=>a.User)
+                    .ToList();
+
                     if (items is not null)
                     {
                         return Results.Ok(items);
@@ -41,7 +46,11 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var item = await db.addresses.FindAsync(inputId);
+
+                    var item = await db.Address
+                    .Include(a=>a.User)
+                    .FirstOrDefaultAsync(a=>a.id == inputId);
+
                     if (item is not null)
                     {
                         return Results.Ok(item);
@@ -64,7 +73,7 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var deleted = db.addresses.Remove(db.addresses.Find(inputId));
+                    var deleted = db.Address.Remove(db.Address.Find(inputId));
                     if (deleted is not null)
                     {
                         db.SaveChangesAsync();
@@ -79,7 +88,7 @@ namespace UserService.Endpoints
                 .WithOpenApi();
 
             //POST
-            endpoints.MapPost("/address", async (Address input, AppDbContext db) =>
+            endpoints.MapPost("/address", async (AddressDto input, AppDbContext db) =>
                 {
                     if (!db.Database.CanConnect())
                     {
@@ -90,9 +99,19 @@ namespace UserService.Endpoints
                     }
                     try
                     {
-                        var entry = db.addresses.Add(input);
+                        Address newAddress = new AddressBuilder()
+                        .WithBuildingNo(input.buildingNo)
+                        .WithCity(input.city)
+                        .WithCountry(input.country)
+                        .WithLocaleNo(input.localeNo)
+                        .WithPostCode(input.postCode)
+                        .WithStreet(input.street)
+                        .WithUserId(input.UserId)
+                        .Build();
+
+                        var entry = db.Address.Add(newAddress);
                         // New occurrence added.
-                        db.SaveChangesAsync();
+                        await db.SaveChangesAsync();
                         // Returning id
                         return Results.Ok(entry.Entity.id);
                     }

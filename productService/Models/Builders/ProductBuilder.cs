@@ -13,6 +13,8 @@ namespace ProductService.Models.Builders{
             _Product.name = dto.name;
             _Product.type = dto.type;
             _Product.weight = dto.weight;
+            _Product.price = dto.price;
+            _Product.tax = dto.tax;
             return this;
         } 
         //Sets dimentions params by obtaining Dinemtions item from db by given id. If object is not found - throws exeption.

@@ -2,11 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using UserService.Models;
 
-namespace UserService.Models
-{
+namespace UserService.Models{
     [Table("podmiot")]
-    internal class User
-    {
+    internal class User{
         [Key]
         [Column("id")]
         public int id { get; set; }
@@ -25,17 +23,13 @@ namespace UserService.Models
 		
 		private char _type = 'u'; // default value - user
 
-		public char type
-		{
+		public char type{
 			get => _type;
-			set
-			{
-				if (value == 'u' || value == 'c')
-				{
+			set{
+				if (value == 'u' || value == 'c'){
 					_type = value;
 				}
-				else
-				{
+				else{
 					_type = 'u';
 					throw new ArgumentException("The type values ​​can only be set to \"u\" and \"c\". The default value \"u\" is used");
 				}

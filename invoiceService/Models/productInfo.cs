@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InvoiceService.Models
 {
     [Table("produktinfo")]
-    public class ProductInfo
+    internal class ProductInfo
     {
         [Key]
         [Column("id")]

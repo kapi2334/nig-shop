@@ -2,11 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using UserService.Models;
 
-namespace UserService.Models
-{
+namespace UserService.Models{
     [Table("adres")]
-    internal class Address
-    {
+    internal class Address{
         [Key]
         [Column("id")]
         public int id { get; set; }

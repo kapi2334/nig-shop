@@ -1,6 +1,6 @@
 namespace InvoiceService.Models.Builders{
 
-    public class ProductInfoBuilder{
+    internal class ProductInfoBuilder{
 
         private readonly ProductInfo _productInfo;
 

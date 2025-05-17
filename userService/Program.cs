@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UserService.Data;
 using UserService.Models;
+using UserService.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ using (var scope = app.Services.CreateScope())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.MapAddressesEndpoints();
+app.MapUsersEndpoints();
 
 app.Run();
 
