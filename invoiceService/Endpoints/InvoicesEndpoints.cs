@@ -86,7 +86,7 @@ namespace InvoiceService.Endpoints
             .WithOpenApi();
 
             // POST
-            endpoints.MapPost("/invoices", async (Invoice input, AppDbContext db) =>
+            endpoints.MapPost("/invoices", async (InvoiceDto input, AppDbContext db) =>
             {
                 if (!db.Database.CanConnect())
                 {
@@ -97,11 +97,10 @@ namespace InvoiceService.Endpoints
                 }
                 try
                 {
-                    var entry = db.invoice.Add(input);
                     // New occurrence added.
-                    db.SaveChangesAsync();
+                    await db.SaveChangesAsync();
                     // Returning id
-                    return Results.Ok(entry.Entity.id);
+                    return Results.Ok();
                 }
                 catch (Exception ex)
                 {
