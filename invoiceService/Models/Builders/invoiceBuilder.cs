@@ -45,6 +45,11 @@ namespace InvoiceService.Models.Builders{
             return this;
         }
 
+        public InvoiceBuilder WithIssuerId(int id){
+            _invoice.issuerId = id;
+                return this;
+
+        }
         public InvoiceBuilder WithIssuer(Issuer issuer)
         {
             _invoice.issuer = issuer;
