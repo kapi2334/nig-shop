@@ -15,6 +15,6 @@ namespace OrderService.Models
         public int productId { get; set; }
 
         [Column("ilosc")]
-        public string quantity { get; set; }
+        public int quantity { get; set; }
     }
 }

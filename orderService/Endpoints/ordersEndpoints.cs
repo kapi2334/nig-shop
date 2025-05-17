@@ -18,7 +18,7 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var items = db.Orders.ToList();
+                    var items = db.Order.ToList();
                     if (items is not null)
                     {
                         return Results.Ok(items);
@@ -41,7 +41,7 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var item = await db.Orders.FindAsync(inputId);
+                    var item = await db.Order.FindAsync(inputId);
                     if (item is not null)
                     {
                         return Results.Ok(item);
@@ -64,7 +64,7 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var deleted = db.Orders.Remove(db.Orders.Find(inputId));
+                    var deleted = db.Order.Remove(db.Order.Find(inputId));
                     if (deleted is not null)
                     {
                         db.SaveChangesAsync();
@@ -90,7 +90,7 @@ namespace OrderService.Endpoints
                     }
                     try
                     {
-                        var entry = db.Orders.Add(input);
+                        var entry = db.Order.Add(input);
                         // New occurrence added.
                         db.SaveChangesAsync();
                         // Returning id

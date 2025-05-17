@@ -19,6 +19,6 @@ namespace OrderService.Models
         public int orderId { get; set; }
 
         [NotMapped]
-        public List<ProductInfo> products { get; set; }
+        public List<OrderedProducts>? products { get; set; }
     }
 }
