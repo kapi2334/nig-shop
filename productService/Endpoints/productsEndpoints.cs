@@ -1,5 +1,7 @@
 using ProductService.Models;
+using ProductService.Models.Builders;
 using ProductService.Data;
+using Microsoft.EntityFrameworkCore;
 namespace ProductService.Endpoints{
 
     internal static class ProductsEndpoints{
@@ -14,7 +16,13 @@ namespace ProductService.Endpoints{
 							statusCode: StatusCodes.Status503ServiceUnavailable
 							);
 					}
-					var items = db.Products.ToList(); 
+                    //Obtaining items and restoring entities
+					var items = db.Products
+                    .Include(p => p.dimensions)
+                    .Include(p => p.material)
+                    .Include(p => p.surfaceType)
+                    .ToList(); 
+
 					if(items is not null){
 					return Results.Ok(items);
 					}
@@ -34,7 +42,12 @@ namespace ProductService.Endpoints{
 							   statusCode: StatusCodes.Status503ServiceUnavailable
 							   );
 			   }
-			   var item = await db.Products.FindAsync(inputId);
+			   var item = await db.Products
+                   .Include(p => p.dimensions)
+                   .Include(p => p.material)
+                   .Include(p => p.surfaceType)
+                   .FirstOrDefaultAsync(p => p.id == inputId);
+
 			   if(item is not null){
 				   return Results.Ok(item);
 			   } 
@@ -69,7 +82,7 @@ namespace ProductService.Endpoints{
 
 
 			//POST
-			endpoints.MapPost("/products",async (Product input, AppDbContext db) =>
+			endpoints.MapPost("/products",async (ProductDto input, AppDbContext db) =>
 			{
 
 			   if(!db.Database.CanConnect()){
@@ -79,9 +92,16 @@ namespace ProductService.Endpoints{
 							   );
 				}
 			   try{
-					var entry = db.Products.Add(input);   
+                    var product = new ProductBuilder(db)
+                    .MapFromDto(input)
+                    .SetDimentionsFromId(input.dimensionsId)
+                    .SetMaterialFromId(input.materialId)
+                    .SetSurfaceFromId(input.surfaceTypeId)
+                    .Build();
+                    
+					var entry = db.Products.Add(product);   
 					//New occurence added.
-					db.SaveChangesAsync();
+					await db.SaveChangesAsync();
 					//Returing id
 					return Results.Ok(entry.Entity.id); 
 			   }

@@ -33,7 +33,7 @@ app.UseHttpsRedirection();
 
 app.MapInvoicesEndpoints();
 app.MapIssuersEndpoints();
-app.MapProductInfoEndpoints();
+
 
 app.Run();
 
