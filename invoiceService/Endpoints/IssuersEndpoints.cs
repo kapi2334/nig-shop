@@ -1,5 +1,6 @@
 using InvoiceService.Models;
 using InvoiceService.Data;
+using Microsoft.EntityFrameworkCore;
 namespace InvoiceService.Endpoints{
 
     internal static class IssuersEndpoints{
@@ -15,7 +16,11 @@ namespace InvoiceService.Endpoints{
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var items = await db.issuer.FindAsync(1);
+                    var items = db.issuer
+                    .Include(i => i.invoices)
+                        .ThenInclude(i => i.products)
+                    .OrderByDescending(x => x.id)
+                    .FirstOrDefault();
                 if (items is not null)
                 {
                     return Results.Ok(items);
@@ -37,23 +42,18 @@ namespace InvoiceService.Endpoints{
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                
-                    var items = db.issuer
-                    .OrderByDescending(x => x.id)
-                    .FirstOrDefault();
-                //Only add issuer if not exist one.
-                if (items is not null)
-                {
+                var newIssuer = db.issuer.Add(input); 
+                if(newIssuer is not null){
+                    await db.SaveChangesAsync();    
+                    return Results.Ok($"Successfully added new issuer to db with id: {newIssuer.Entity.id}. Provided data will be used in newly created invoices.");
+                }
+                else{
                     return Results.Problem(
-                        detail: "Before adding new issuer, delete existing one.",
-                        statusCode: StatusCodes.Status409Conflict
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            detail: "Failed to add new issuer entry to database. "
                             );
                 }
-                else
-                {
-                    
-                    return Results.NotFound();
-                }
+                
             })
             .WithName("AddIssuer")
             .WithOpenApi();

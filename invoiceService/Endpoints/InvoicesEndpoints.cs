@@ -1,5 +1,6 @@
 using InvoiceService.Models;
 using InvoiceService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvoiceService.Endpoints
 {
@@ -18,7 +19,10 @@ namespace InvoiceService.Endpoints
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var items = db.invoice.ToList();
+                var items = db.invoice
+                .Include(i => i.issuer) 
+                .Include(i => i.products) 
+                .ToList();
                 if (items is not null)
                 {
                     return Results.Ok(items);
@@ -41,7 +45,10 @@ namespace InvoiceService.Endpoints
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var item = await db.invoice.FindAsync(inputId);
+                var item = await db.invoice
+                .Include(i => i.issuer) 
+                .Include(i => i.products) 
+                .FirstOrDefaultAsync(i => i.id == inputId);
                 if (item is not null)
                 {
                     return Results.Ok(item);
