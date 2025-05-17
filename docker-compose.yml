@@ -1,17 +1,21 @@
-
 services:
   ############################UI Containers############################
   user-app:
     build:
       context: ./Frontend/clientApp
       dockerfile: Dockerfile
-    container_name: clientApp 
-    environment:
-      - ASPNETCORE_URLS=http://+:5010
+    container_name: clientApp
     ports:
-      - "4000:5010" 
+      - "4000:80"
     networks:
-      - ui 
+      - ui
+      - backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - product-service
+      - nginx
+
   admin-app:
     build:
       context: ./Frontend/adminApp
@@ -23,7 +27,6 @@ services:
       - "4001:5011" 
     networks:
       - ui 
-
 
   ############################API Services############################
   user-service:
@@ -48,6 +51,8 @@ services:
     container_name: product_service
     environment:
       - ASPNETCORE_URLS=http://+:5005
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CORS_ORIGINS=http://localhost:4000
     ports:
       - "3000:5005" 
     networks:
@@ -55,6 +60,7 @@ services:
       - backend
     depends_on:
       - product-service-db 
+
   payment-service:
     build:
       context: ./paymentService
@@ -67,6 +73,7 @@ services:
     networks:
       - backend
       - db
+
   order-service:
     build:
       context: ./orderService
@@ -81,6 +88,7 @@ services:
       - db
     depends_on:
       - order-service-db 
+
   invoice-service:
     build:
       context: ./invoiceService
@@ -95,17 +103,22 @@ services:
       - db
     depends_on:
       - invoice-service-db
-###############################nginx########################################
+
+  ###############################nginx########################################
   nginx:
-    build:
-      context: /nginx
-      dockerfile: Dockerfile
+    image: nginx:alpine
     container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
     networks:
       - ui
-###############################Databases#####################################
+      - backend
+    depends_on:
+      - product-service
+
+  ###############################Databases#####################################
   user-service-db:
     image: postgres:17
     environment:
@@ -114,11 +127,12 @@ services:
       POSTGRES_DB: userservice
     volumes:
       - userservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint.d/init.sql
+      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5431:5432"
     networks:
       - db
+
   product-service-db:
     image: postgres:17
     environment:
@@ -129,7 +143,7 @@ services:
       - "5432:5432"
     volumes:
       - productservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint.d/init.sql
+      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
     
@@ -143,7 +157,7 @@ services:
       - "5433:5432"
     volumes:
       - invoiceservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint.d/init.sql
+      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
   
@@ -157,7 +171,7 @@ services:
       - "5434:5432"
     volumes:
       - orderservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint.d/init.sql
+      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db     
       
@@ -169,6 +183,7 @@ networks:
     driver: bridge
   db:
     driver: bridge
+
 volumes:
   userservice_data:
   productservice_data:
