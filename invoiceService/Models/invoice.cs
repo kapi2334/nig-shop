@@ -32,7 +32,7 @@ namespace InvoiceService.Models
         public string clientCountry { get; set; }
 
         [Column("klient_nip")]
-        public string clientNIP { get; set; }
+        public long? clientNIP { get; set; }
 
         [Column("datawystawienia")]
         public DateTime issueDate { get; set; }
