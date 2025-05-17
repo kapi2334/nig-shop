@@ -30,8 +30,5 @@ namespace InvoiceService.Models
 
         [Column("faktura_id")]
         public int invoiceId { get; set; }
-
-        [ForeignKey("InvoiceId")]
-        public Invoice invoice { get; set; }
     }
 }

@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvoiceService.Models
 {
-
     [Table("faktura")]
     public class Invoice
     {
@@ -48,7 +46,7 @@ namespace InvoiceService.Models
         [Column("wystawca_id")]
         public int issuerId { get; set; }
 
-        [ForeignKey("IssuerId")]
+        [ForeignKey("issuerId")]
         public Issuer issuer { get; set; }
 
         public List<ProductInfo> products { get; set; }
