@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace invoiceService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517150118_SyncProductInfoWithDb")]
-    partial class SyncProductInfoWithDb
+    [Migration("20250517173609_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

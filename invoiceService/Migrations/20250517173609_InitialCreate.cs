@@ -49,15 +49,14 @@ namespace invoiceService.Migrations
                     datawystawienia = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     terminplatnosci = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     rodzajplatnosci = table.Column<string>(type: "text", nullable: false),
-                    wystawca_id = table.Column<int>(type: "integer", nullable: false),
-                    IssuerId = table.Column<int>(type: "integer", nullable: false)
+                    wystawca_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_faktura", x => x.id);
                     table.ForeignKey(
-                        name: "FK_faktura_wystawca_IssuerId",
-                        column: x => x.IssuerId,
+                        name: "FK_faktura_wystawca_wystawca_id",
+                        column: x => x.wystawca_id,
                         principalTable: "wystawca",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -76,28 +75,28 @@ namespace invoiceService.Migrations
                     netto = table.Column<double>(type: "double precision", nullable: false),
                     brutto = table.Column<double>(type: "double precision", nullable: false),
                     faktura_id = table.Column<int>(type: "integer", nullable: false),
-                    InvoiceId = table.Column<int>(type: "integer", nullable: false)
+                    produkt_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_produktinfo", x => x.id);
                     table.ForeignKey(
-                        name: "FK_produktinfo_faktura_InvoiceId",
-                        column: x => x.InvoiceId,
+                        name: "FK_produktinfo_faktura_faktura_id",
+                        column: x => x.faktura_id,
                         principalTable: "faktura",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_faktura_IssuerId",
+                name: "IX_faktura_wystawca_id",
                 table: "faktura",
-                column: "IssuerId");
+                column: "wystawca_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_produktinfo_InvoiceId",
+                name: "IX_produktinfo_faktura_id",
                 table: "produktinfo",
-                column: "InvoiceId");
+                column: "faktura_id");
         }
 
         /// <inheritdoc />
