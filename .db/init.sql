@@ -1,8 +1,7 @@
 -- Function to safely create database and handle permissions
 CREATE OR REPLACE FUNCTION create_database_if_not_exists(
     db_name text,
-    db_owner text,
-    db_password text
+    db_owner text
 ) RETURNS void AS $$
 BEGIN
     -- Check if database exists
@@ -11,10 +10,8 @@ BEGIN
         EXECUTE format('CREATE DATABASE %I', db_name);
         
         -- Connect to the new database and set up permissions
-        EXECUTE format('
-            GRANT ALL PRIVILEGES ON DATABASE %I TO %I;
-            ALTER DATABASE %I OWNER TO %I;
-        ', db_name, db_owner, db_name, db_owner);
+        EXECUTE format('GRANT ALL PRIVILEGES ON DATABASE %I TO %I', db_name, db_owner);
+        EXECUTE format('ALTER DATABASE %I OWNER TO %I', db_name, db_owner);
         
         RAISE NOTICE 'Created database: %', db_name;
     ELSE
@@ -25,13 +22,10 @@ $$ LANGUAGE plpgsql;
 
 -- Create databases safely
 DO $$
-DECLARE
-    db_owner text := 'postgres';
-    db_password text := 'Rybenka!Dorsze47';
 BEGIN
-    PERFORM create_database_if_not_exists('userservice', db_owner, db_password);
-    PERFORM create_database_if_not_exists('productservice', db_owner, db_password);
-    PERFORM create_database_if_not_exists('invoiceservice', db_owner, db_password);
-    PERFORM create_database_if_not_exists('orderservice', db_owner, db_password);
+    PERFORM create_database_if_not_exists('userservice', 'postgres');
+    PERFORM create_database_if_not_exists('productservice', 'postgres');
+    PERFORM create_database_if_not_exists('invoiceservice', 'postgres');
+    PERFORM create_database_if_not_exists('orderservice', 'postgres');
 END;
 $$;

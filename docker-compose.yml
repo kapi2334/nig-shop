@@ -128,33 +128,48 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Rybenka!Dorsze47
-    volumes:
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
+    depends_on:
+      - user-service-db
+      - product-service-db
+      - invoice-service-db
+      - order-service-db
     command: >
-      bash -c "
-        until PGPASSWORD=Rybenka!Dorsze47 psql -h user-service-db -U postgres -c '\q'; do
-          echo 'Waiting for user-service-db...'
-          sleep 2
+      bash -c '
+        echo "Starting database initialization..."
+        
+        max_attempts=5
+        attempt=1
+        
+        for db in user-service-db product-service-db invoice-service-db order-service-db; do
+          echo "Checking connection to $$db..."
+          while ! PGPASSWORD=Rybenka!Dorsze47 psql -h $$db -U postgres -d postgres -c "SELECT 1;" > /dev/null 2>&1; do
+            echo "Attempt $$attempt/$$max_attempts: Waiting for $$db to be ready..."
+            sleep 2
+            attempt=$$((attempt + 1))
+            if [ $$attempt -gt $$max_attempts ]; then
+              echo "Error: Timeout waiting for $$db after $$max_attempts attempts"
+              exit 1
+            fi
+          done
+          echo "$$db is ready!"
+          attempt=1
         done
-        until PGPASSWORD=Rybenka!Dorsze47 psql -h product-service-db -U postgres -c '\q'; do
-          echo 'Waiting for product-service-db...'
-          sleep 2
+
+        echo "All databases are ready. Creating databases if they dont exist..."
+        
+        for db_host in user-service-db product-service-db invoice-service-db order-service-db; do
+          db_name=$${db_host%-db}service
+          echo "Creating database $$db_name on host $$db_host if it doesnt exist..."
+          PGPASSWORD=Rybenka!Dorsze47 psql -h $$db_host -U postgres -d postgres -c "CREATE DATABASE $$db_name;" && \
+            echo "Successfully created database $$db_name" || \
+            echo "Note: Database $$db_name already exists"
         done
-        until PGPASSWORD=Rybenka!Dorsze47 psql -h invoice-service-db -U postgres -c '\q'; do
-          echo 'Waiting for invoice-service-db...'
-          sleep 2
-        done
-        until PGPASSWORD=Rybenka!Dorsze47 psql -h order-service-db -U postgres -c '\q'; do
-          echo 'Waiting for order-service-db...'
-          sleep 2
-        done
-        PGPASSWORD=Rybenka!Dorsze47 psql -h user-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
-        PGPASSWORD=Rybenka!Dorsze47 psql -h product-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
-        PGPASSWORD=Rybenka!Dorsze47 psql -h invoice-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
-        PGPASSWORD=Rybenka!Dorsze47 psql -h order-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
-      "
+        
+        echo "Database initialization completed successfully!"
+        exit 0
+      '
 
   user-service-db:
     image: postgres:17
@@ -164,7 +179,6 @@ services:
       POSTGRES_DB: userservice
     volumes:
       - userservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5431:5432"
     networks:
@@ -180,7 +194,6 @@ services:
       - "5432:5432"
     volumes:
       - productservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
     
@@ -194,7 +207,6 @@ services:
       - "5433:5432"
     volumes:
       - invoiceservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
   
@@ -208,9 +220,8 @@ services:
       - "5434:5432"
     volumes:
       - orderservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - db     
+      - db
       
 ###############################Networks definitions##########################
 networks:
