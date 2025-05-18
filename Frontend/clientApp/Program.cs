@@ -8,13 +8,20 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Configure HttpClient
-builder.Services.AddScoped<HttpClient>();
+// Configure HttpClient with base address from configuration
+builder.Services.AddScoped(sp => 
+{
+    var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+    // Add default headers
+    httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    return httpClient;
+});
+
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddSingleton<OrderService>();
+builder.Services.AddScoped<OrderApiService>();
+
+// Configure logging for WebAssembly
 builder.Services.AddLogging(logging => logging.SetMinimumLevel(LogLevel.Debug));
 
-var app = builder.Build();
-
-// Enable console logging for debugging
-await app.RunAsync(); 
+await builder.Build().RunAsync(); 

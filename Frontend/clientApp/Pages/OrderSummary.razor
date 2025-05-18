@@ -3,6 +3,7 @@
 @using clientApp.Services
 @inject NavigationManager NavigationManager
 @inject OrderService OrderService
+@inject OrderApiService OrderApiService
 
 <div class="container">
     <div class="order-header">
@@ -52,6 +53,12 @@
             <label for="delivery">Delivery</label>
             <span class="delivery-time">(~2/~3Working days)</span>
         </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @errorMessage
+            </div>
+        }
         <div class="buttons">
             <button class="btn btn-success order-btn" @onclick="PlaceOrder">Order</button>
             <button class="btn btn-danger cancel-btn" @onclick="Cancel">Cancel</button>
@@ -138,6 +145,7 @@
 @code {
     private List<OrderItem> orderItems = new();
     private bool includeDelivery = false;
+    private string? errorMessage;
 
     protected override void OnInitialized()
     {
@@ -186,10 +194,29 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private void PlaceOrder()
+    private async Task PlaceOrder()
     {
-        // Here we would normally handle the order placement
-        // For now, just navigate back
-        NavigationManager.NavigateTo("/");
+        var orderRequest = new OrderRequest
+        {
+            clientId = 0,
+            delivery = includeDelivery,
+            products = orderItems.Select(item => new OrderProductRequest
+            {
+                productId = item.Product.Id,
+                quantity = item.Quantity
+            }).ToList()
+        };
+
+        var success = await OrderApiService.PlaceOrderAsync(orderRequest);
+        
+        if (success)
+        {
+            OrderService.SetDeliveryOption(includeDelivery);
+            NavigationManager.NavigateTo("/payment");
+        }
+        else
+        {
+            errorMessage = "Failed to place order. Please try again.";
+        }
     }
 } 

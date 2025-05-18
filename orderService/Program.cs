@@ -12,6 +12,19 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder
+            .SetIsOriginAllowed(_ => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -23,7 +36,6 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate(); // <- to wykona migracje
 }
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -31,10 +43,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Use CORS before other middleware
+app.UseCors("AllowAll");
+
+// Removing HTTPS redirection for development
+// app.UseHttpsRedirection();
 
 app.MapOrdersEndpoints();
-
 
 app.Run();
 

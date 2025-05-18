@@ -1,0 +1,116 @@
+@page "/payment"
+@using clientApp.Models
+@using clientApp.Services
+@inject NavigationManager NavigationManager
+@inject OrderService OrderService
+
+<div class="container">
+    <div class="payment-header">
+        <h1 class="text-center">Payment</h1>
+    </div>
+
+    <div class="payment-details">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Order Summary</h5>
+                <p class="card-text">
+                    <strong>Total Products:</strong> @GetTotalProducts()<br />
+                    <strong>Total Amount:</strong> ₪@GetTotalAmount()<br />
+                    <strong>Delivery:</strong> @(includeDelivery ? "Yes (+₪20)" : "No")<br />
+                </p>
+            </div>
+        </div>
+
+        <div class="mock-payment-form mt-4">
+            <div class="form-group mb-3">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" class="form-control" id="cardNumber" value="4111 1111 1111 1111" disabled />
+            </div>
+            <div class="form-group mb-3">
+                <label for="cardHolder">Card Holder</label>
+                <input type="text" class="form-control" id="cardHolder" value="John Doe" disabled />
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="text" class="form-control" id="expiry" value="12/25" disabled />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="cvv">CVV</label>
+                    <input type="text" class="form-control" id="cvv" value="123" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-actions mt-4">
+            <button class="btn btn-success payment-btn" @onclick="ProcessPayment">Pay ₪@GetTotalAmount()</button>
+            <button class="btn btn-secondary cancel-btn" @onclick="CancelPayment">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .payment-header {
+        margin-bottom: 30px;
+    }
+
+    .payment-details {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .payment-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .payment-btn, .cancel-btn {
+        min-width: 150px;
+    }
+
+    .mock-payment-form input {
+        background-color: #f8f9fa;
+    }
+</style>
+
+@code {
+    private List<OrderItem> orderItems = new();
+    private bool includeDelivery = false;
+
+    protected override void OnInitialized()
+    {
+        orderItems = OrderService.GetCurrentOrder();
+        includeDelivery = OrderService.GetDeliveryOption();
+    }
+
+    private int GetTotalProducts()
+    {
+        return orderItems.Sum(item => item.Quantity);
+    }
+
+    private decimal GetTotalAmount()
+    {
+        decimal baseAmount = orderItems.Sum(item => item.Product.Price * item.Quantity);
+        return includeDelivery ? baseAmount + 20 : baseAmount;
+    }
+
+    private async Task ProcessPayment()
+    {
+        // Mock successful payment
+        await Task.Delay(1000); // Simulate processing
+        OrderService.ClearOrder(); // Clear the order after successful payment
+        NavigationManager.NavigateTo("/order-confirmation");
+    }
+
+    private void CancelPayment()
+    {
+        NavigationManager.NavigateTo("/order-summary");
+    }
+} 

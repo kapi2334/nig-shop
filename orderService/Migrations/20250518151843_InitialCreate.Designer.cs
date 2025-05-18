@@ -11,7 +11,7 @@ using OrderService.Data;
 namespace orderService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250516224512_InitialCreate")]
+    [Migration("20250518151843_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace orderService.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<int>("id"));
 
                     b.Property<int>("clientId")
                         .HasColumnType("integer")
@@ -47,7 +47,7 @@ namespace orderService.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("zamowienie");
+                    b.ToTable("zamowienie", (string)null);
                 });
 
             modelBuilder.Entity("OrderService.Models.OrderedProducts", b =>
@@ -57,7 +57,7 @@ namespace orderService.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<int>("id"));
 
                     b.Property<int>("orderId")
                         .HasColumnType("integer")
@@ -67,14 +67,29 @@ namespace orderService.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("produkt_id");
 
-                    b.Property<string>("quantity")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("quantity")
+                        .HasColumnType("integer")
                         .HasColumnName("ilosc");
 
                     b.HasKey("id");
 
-                    b.ToTable("zamowienie_produkty");
+                    b.HasIndex("orderId");
+
+                    b.ToTable("zamowienie_produkty", (string)null);
+                });
+
+            modelBuilder.Entity("OrderService.Models.OrderedProducts", b =>
+                {
+                    b.HasOne("OrderService.Models.Order", null)
+                        .WithMany("products")
+                        .HasForeignKey("orderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrderService.Models.Order", b =>
+                {
+                    b.Navigation("products");
                 });
 #pragma warning restore 612, 618
         }
