@@ -11,6 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // Configure HttpClient
 builder.Services.AddScoped<HttpClient>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddSingleton<OrderService>();
 builder.Services.AddLogging(logging => logging.SetMinimumLevel(LogLevel.Debug));
 
 var app = builder.Build();

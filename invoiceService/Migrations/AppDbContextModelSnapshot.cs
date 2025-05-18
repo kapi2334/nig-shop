@@ -144,7 +144,7 @@ namespace invoiceService.Migrations
                     b.ToTable("wystawca", (string)null);
                 });
 
-            modelBuilder.Entity("InvoiceService.Models.ProductInfo", b =>
+            modelBuilder.Entity("InvoiceService.Models.Product", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -153,50 +153,54 @@ namespace invoiceService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<double>("gross")
-                        .HasColumnType("double precision")
-                        .HasColumnName("brutto");
+                    b.Property<int?>("Invoiceid")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("invoiceId")
+                    b.Property<int>("dimensionsId")
                         .HasColumnType("integer")
-                        .HasColumnName("faktura_id");
+                        .HasColumnName("wymiary_id");
 
-                    b.Property<double>("net")
-                        .HasColumnType("double precision")
-                        .HasColumnName("netto");
-
-                    b.Property<int>("product_id")
+                    b.Property<int>("materialId")
                         .HasColumnType("integer")
-                        .HasColumnName("produkt_id");
+                        .HasColumnName("material_id");
 
-                    b.Property<string>("quantity")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("ilosc");
+                        .HasColumnName("nazwa");
+
+                    b.Property<float>("price")
+                        .HasColumnType("real")
+                        .HasColumnName("cena");
+
+                    b.Property<int>("surfaceTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("powierzchnia_id");
 
                     b.Property<int>("tax")
                         .HasColumnType("integer")
                         .HasColumnName("podatek");
 
-                    b.Property<double>("taxAmount")
-                        .HasColumnType("double precision")
-                        .HasColumnName("kwotapodatku");
+                    b.Property<string>("type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("typ");
 
-                    b.Property<double>("totalPrice")
+                    b.Property<double>("weight")
                         .HasColumnType("double precision")
-                        .HasColumnName("cenaogolem");
+                        .HasColumnName("waga");
 
                     b.HasKey("id");
 
-                    b.HasIndex("invoiceId");
+                    b.HasIndex("Invoiceid");
 
-                    b.ToTable("produktinfo", (string)null);
+                    b.ToTable("produkt", (string)null);
                 });
 
             modelBuilder.Entity("InvoiceService.Models.Invoice", b =>
                 {
                     b.HasOne("InvoiceService.Models.Issuer", "issuer")
-                        .WithMany("invoices")
+                        .WithMany()
                         .HasForeignKey("issuerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -204,23 +208,17 @@ namespace invoiceService.Migrations
                     b.Navigation("issuer");
                 });
 
-            modelBuilder.Entity("InvoiceService.Models.ProductInfo", b =>
+            modelBuilder.Entity("InvoiceService.Models.Product", b =>
                 {
                     b.HasOne("InvoiceService.Models.Invoice", null)
                         .WithMany("products")
-                        .HasForeignKey("invoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Invoiceid")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("InvoiceService.Models.Invoice", b =>
                 {
                     b.Navigation("products");
-                });
-
-            modelBuilder.Entity("InvoiceService.Models.Issuer", b =>
-                {
-                    b.Navigation("invoices");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,194 @@
+@page "/order-summary"
+@using clientApp.Models
+@using clientApp.Services
+@inject NavigationManager NavigationManager
+@inject OrderService OrderService
+
+<div class="container">
+    <div class="order-header">
+        <button class="back-button" @onclick="NavigateBack">←</button>
+        <h1 class="text-center">ORDER SUMMARY</h1>
+        <div class="logged-user">Logged as: [name]</div>
+    </div>
+
+    <div class="order-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total price</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in orderItems)
+                {
+                    <tr>
+                        <td>@item.Product.Name</td>
+                        <td>x @item.Quantity</td>
+                        <td>₪@item.Product.Price</td>
+                        <td>₪@(item.Product.Price * item.Quantity)</td>
+                        <td>
+                            <button class="btn btn-success btn-sm" @onclick="() => IncrementQuantity(item)">+</button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DecrementQuantity(item)">-</button>
+                            <button class="btn btn-danger delete-btn" @onclick="() => RemoveItem(item)">delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="order-summary">
+        <div class="products-count">@GetTotalProducts() products</div>
+        <div class="total-amount">₪@GetTotalAmount()</div>
+    </div>
+
+    <div class="order-actions">
+        <div class="delivery-option">
+            <input type="checkbox" id="delivery" @bind="includeDelivery" />
+            <label for="delivery">Delivery</label>
+            <span class="delivery-time">(~2/~3Working days)</span>
+        </div>
+        <div class="buttons">
+            <button class="btn btn-success order-btn" @onclick="PlaceOrder">Order</button>
+            <button class="btn btn-danger cancel-btn" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .back-button {
+        border: 1px solid red;
+        background: none;
+        padding: 5px 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .logged-user {
+        border: 1px solid black;
+        padding: 5px 10px;
+    }
+
+    .order-table {
+        margin-bottom: 30px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table th, .table td {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .delete-btn {
+        margin-left: 5px;
+    }
+
+    .order-summary {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .delivery-option {
+        margin-bottom: 20px;
+    }
+
+    .delivery-time {
+        color: gray;
+        margin-left: 10px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .order-btn {
+        padding: 10px 30px;
+    }
+
+    .cancel-btn {
+        padding: 10px 30px;
+    }
+</style>
+
+@code {
+    private List<OrderItem> orderItems = new();
+    private bool includeDelivery = false;
+
+    protected override void OnInitialized()
+    {
+        orderItems = OrderService.GetCurrentOrder();
+    }
+
+    private void IncrementQuantity(OrderItem item)
+    {
+        item.Quantity++;
+    }
+
+    private void DecrementQuantity(OrderItem item)
+    {
+        item.Quantity--;
+        if (item.Quantity < 1)
+        {
+            RemoveItem(item);
+        }
+    }
+
+    private void RemoveItem(OrderItem item)
+    {
+        orderItems.Remove(item);
+    }
+
+    private int GetTotalProducts()
+    {
+        return orderItems.Sum(item => item.Quantity);
+    }
+
+    private decimal GetTotalAmount()
+    {
+        return orderItems.Sum(item => item.Product.Price * item.Quantity);
+    }
+
+    private void NavigateBack()
+    {
+        OrderService.SetCurrentOrder(orderItems);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void Cancel()
+    {
+        OrderService.ClearOrder();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void PlaceOrder()
+    {
+        // Here we would normally handle the order placement
+        // For now, just navigate back
+        NavigationManager.NavigateTo("/");
+    }
+} 

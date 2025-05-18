@@ -2,6 +2,7 @@
 @using clientApp.Models
 @using clientApp.Services
 @inject ProductService ProductService
+@inject OrderService OrderService
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
 
@@ -107,7 +108,7 @@
                 }
             </div>
             <div style="position: absolute; bottom: 1rem; right: 1rem; width: calc(100% - 2rem);">
-                <button class="btn btn-success w-100">Zamuf</button>
+                <button class="btn btn-success w-100" @onclick="NavigateToOrderSummary">Zamuf</button>
             </div>
         </div>
     </div>
@@ -126,6 +127,9 @@
             Logger.LogInformation("Initializing Index page");
             products = await ProductService.GetProductsAsync();
             Logger.LogInformation($"Loaded {products?.Count ?? 0} products");
+            
+            // Pobieramy aktualną listę zamówień
+            orderItems = OrderService.GetCurrentOrder();
         }
         catch (Exception ex)
         {
@@ -164,5 +168,11 @@
     private void NavigateToLogin()
     {
         NavigationManager.NavigateTo("/login");
+    }
+
+    private void NavigateToOrderSummary()
+    {
+        OrderService.SetCurrentOrder(orderItems);
+        NavigationManager.NavigateTo("/order-summary");
     }
 } 

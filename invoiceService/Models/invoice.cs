@@ -52,44 +52,25 @@ namespace InvoiceService.Models
         [ForeignKey("issuerId")]
         public Issuer issuer { get; set; }
 
-        public List<ProductInfo> products { get; set; }
+        public List<Product> products { get; set; }
 
+        public async Task BuildProductInfosAsync(List<ProductDto> productDtos, ApiService apiService)
+        {
+            var productList = new List<Product>();
 
-    public async Task BuildProductInfosAsync(List<ProductDto> productDtos, ApiService apiService){
+            foreach (var dto in productDtos)
+            {
+                var product = await apiService.GetAsync<Product>($"http://product_service:5005/products/{dto.productId}");
 
-    var productInfos = new List<ProductInfo>();
+                if (product == null)
+                {
+                    throw new Exception($"Api response error: product with id:{dto.productId} returned empty.");
+                }
+                
+                productList.Add(product);
+            }
 
-    foreach (var dto in productDtos){
-
-        var product = await apiService.GetAsync<Product>($"http://product_service:5005/products/{dto.productId}");
-
-        if (product == null){
-            throw new Exception($"Api response error: product with id:{dto.productId} returned empty.");
+            products = productList;
         }
-        //Calculating required variables
-        double totalPrice = product.price * dto.amount;
-        double net = totalPrice / (1 + (product.tax / 100.0));
-        double taxAmount = totalPrice - net;
-        
-        //building productInfo
-        var productInfo = new ProductInfoBuilder()
-            .WithProductId(product.id)
-            .WithQuantity(dto.amount.ToString())
-            .WithTotalPrice(totalPrice)
-            .WithNet(Math.Round(net, 2))
-            .WithTax(product.tax)
-            .WithTaxAmount(Math.Round(taxAmount, 2))
-            .WithGross(Math.Round(totalPrice, 2))
-            .Build();
-        
-        productInfos.Add(productInfo);
-    }
-
-    products = productInfos;
-}
-
-
-
-
     }
 }

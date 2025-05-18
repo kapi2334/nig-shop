@@ -33,7 +33,5 @@ namespace InvoiceService.Models
 
         [Column("nip")]
         public string nip { get; set; }
-
-        public List<Invoice> invoices { get; set; }
     }
 }

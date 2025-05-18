@@ -39,8 +39,7 @@ namespace InvoiceService.Models
             outIssuer.city = city;
             outIssuer.country = country;
             outIssuer.nip = nip;
-            outIssuer.invoices = new List<Invoice>();
-			return outIssuer;
+            return outIssuer;
 		}
 		
 

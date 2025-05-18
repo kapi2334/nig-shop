@@ -9,26 +9,25 @@ namespace InvoiceService.Data
 
         public DbSet<Issuer> Issuer { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
-        public DbSet<ProductInfo> ProductInfo { get; set; }
+        public DbSet<Product> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Issuer>().ToTable("wystawca");
             modelBuilder.Entity<Invoice>().ToTable("faktura");
-            modelBuilder.Entity<ProductInfo>().ToTable("produktinfo");
+            modelBuilder.Entity<Product>().ToTable("produkt");
 
-            // Relacja Issuer -> wiele Invoice
+            // Invoice ma odniesienie do Issuer, ale Issuer nie ma do Invoice
             modelBuilder.Entity<Invoice>()
                 .HasOne(i => i.issuer)
-                .WithMany(w => w.invoices)
+                .WithMany()
                 .HasForeignKey(i => i.issuerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Relacja Invoice -> wiele ProductInfo
-            modelBuilder.Entity<ProductInfo>()
-                .HasOne<Invoice>()
-                .WithMany(i => i.products)
-                .HasForeignKey(p => p.invoiceId)
+            // Invoice ma odniesienie do Product, ale Product nie ma do Invoice
+            modelBuilder.Entity<Invoice>()
+                .HasMany(i => i.products)
+                .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

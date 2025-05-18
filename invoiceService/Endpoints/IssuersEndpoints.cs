@@ -17,8 +17,6 @@ namespace InvoiceService.Endpoints{
                     );
                 }
                     var items = db.Issuer
-                    .Include(i => i.invoices)
-                        .ThenInclude(i => i.products)
                     .OrderByDescending(x => x.id)
                     .FirstOrDefault();
                 if (items is not null)

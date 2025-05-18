@@ -63,26 +63,27 @@ namespace invoiceService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "produktinfo",
+                name: "produkt",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ilosc = table.Column<string>(type: "text", nullable: false),
-                    cenaogolem = table.Column<double>(type: "double precision", nullable: false),
+                    nazwa = table.Column<string>(type: "text", nullable: false),
+                    typ = table.Column<string>(type: "text", nullable: false),
+                    waga = table.Column<double>(type: "double precision", nullable: false),
+                    cena = table.Column<float>(type: "real", nullable: false),
                     podatek = table.Column<int>(type: "integer", nullable: false),
-                    kwotapodatku = table.Column<double>(type: "double precision", nullable: false),
-                    netto = table.Column<double>(type: "double precision", nullable: false),
-                    brutto = table.Column<double>(type: "double precision", nullable: false),
-                    faktura_id = table.Column<int>(type: "integer", nullable: false),
-                    produkt_id = table.Column<int>(type: "integer", nullable: false)
+                    wymiary_id = table.Column<int>(type: "integer", nullable: false),
+                    material_id = table.Column<int>(type: "integer", nullable: false),
+                    powierzchnia_id = table.Column<int>(type: "integer", nullable: false),
+                    Invoiceid = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_produktinfo", x => x.id);
+                    table.PrimaryKey("PK_produkt", x => x.id);
                     table.ForeignKey(
-                        name: "FK_produktinfo_faktura_faktura_id",
-                        column: x => x.faktura_id,
+                        name: "FK_produkt_faktura_Invoiceid",
+                        column: x => x.Invoiceid,
                         principalTable: "faktura",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -94,16 +95,16 @@ namespace invoiceService.Migrations
                 column: "wystawca_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_produktinfo_faktura_id",
-                table: "produktinfo",
-                column: "faktura_id");
+                name: "IX_produkt_Invoiceid",
+                table: "produkt",
+                column: "Invoiceid");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "produktinfo");
+                name: "produkt");
 
             migrationBuilder.DropTable(
                 name: "faktura");
