@@ -33,7 +33,7 @@ namespace InvoiceService.Endpoints{
             .WithName("GetIssuer")
             .WithOpenApi();
 
-            endpoints.MapPost("/issuer", async (Issuer input, AppDbContext db) =>
+            endpoints.MapPost("/issuer", async (IssuerDto input, AppDbContext db) =>
             {
                 if (!db.Database.CanConnect())
                 {
@@ -42,7 +42,8 @@ namespace InvoiceService.Endpoints{
                         statusCode: StatusCodes.Status503ServiceUnavailable
                     );
                 }
-                var newIssuer = db.Issuer.Add(input); 
+                Issuer mappedIssuer = input.MapToIssuer();
+                var newIssuer = db.Issuer.Add(mappedIssuer); 
                 if(newIssuer is not null){
                     await db.SaveChangesAsync();    
                     return Results.Ok($"Successfully added new issuer to db with id: {newIssuer.Entity.id}. Provided data will be used in newly created invoices.");

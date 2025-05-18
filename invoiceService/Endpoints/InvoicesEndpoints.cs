@@ -103,12 +103,18 @@ namespace InvoiceService.Endpoints
                 {
                     if (endpoints is WebApplication app){
                         var apiService = app.Services.GetRequiredService<ApiService>();
-                        User user = await apiService.GetAsync<User>(app.Configuration.GetConnectionString("UserService"));
+                        string uri = app.Configuration.GetConnectionString("UserService")+ $"users/{input.clientId}";
+                        Console.WriteLine("Got an API handle");
+                        User user = await apiService.GetAsync<User>(uri);
+                        
+                        Console.WriteLine("usersService API responded successfully.");
                         Issuer issuer = db.Issuer
                         .OrderByDescending(i=>i.id)
                         .FirstOrDefault();
 
+                        Console.WriteLine("Issuer obtained successfully.");
                         if(user is not null ){
+                            Console.WriteLine("User is valid.");
                             if(issuer is null) { return Results.NotFound("Valid issuer data not found. Service may be temporarily unavailable.");}
                         //Create invoice from given data
                         Invoice outInvoice = new InvoiceBuilder()
@@ -130,11 +136,6 @@ namespace InvoiceService.Endpoints
                                     );
 
                         }
-                        
-                        
-
-
-
                         return Results.Ok();
                     }else{
                         return Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "Cant access httpService");

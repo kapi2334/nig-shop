@@ -22,6 +22,7 @@ namespace UserService.Endpoints
                         );
                     }
                     var items = db.Users
+                    .Include(u=>u.Addresses)
                     .ToList();
                     if (items is not null)
                     {
@@ -99,7 +100,8 @@ namespace UserService.Endpoints
                     try{
                             
 
-                    
+                   Console.WriteLine($"{input.id}User adding procedure initalization..."); 
+                   Console.WriteLine("Building user from given data."); 
                         User newUser = new UserBuilder()
                         .WithLogin(input.login)
                         .WithPasswordHash(input.passwordHash)
@@ -109,12 +111,18 @@ namespace UserService.Endpoints
                         .WithSurname(input.surname)
                         .Build();
                         
+                   Console.WriteLine($"{newUser.id}User object successfully created."); 
+                   Console.WriteLine("Mapping addresses..."); 
+
                         AddressMapperService mapper = new AddressMapperService();
                         newUser.Addresses = await mapper.MapoutAddressAsync(input.Addresses.ToList(),db);
 
+                   Console.WriteLine("Addresses successfully mapped."); 
+                   Console.WriteLine($"{newUser.id}Saving to database."); 
+
                         var addedUser = db.Users.Add(newUser);
                         await db.SaveChangesAsync();
-                        return Results.Ok(addedUser);
+                        return Results.Ok(addedUser.Entity.id);
 
                     }
                     catch(Exception ex){

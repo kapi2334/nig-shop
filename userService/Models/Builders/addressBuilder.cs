@@ -43,16 +43,7 @@ internal class AddressBuilder{
         return this;
     }
 
-<<<<<<< HEAD
 
-    public AddressBuilder WithUser(User user){
-        _address.User = user;
-        _address.UserId = user.id;
-        return this;
-    }
-
-=======
->>>>>>> 4d82af12592f2899358d3e5e77929ae1a7d364a2
     public Address Build(){
         return _address;
     }
