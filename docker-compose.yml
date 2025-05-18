@@ -42,8 +42,9 @@ services:
       - db
       - backend
     depends_on:
-      - user-service-db 
-      
+      - user-service-db
+      - database-init
+
   product-service:
     build:
       context: ./productService
@@ -59,7 +60,8 @@ services:
       - db
       - backend
     depends_on:
-      - product-service-db 
+      - product-service-db
+      - database-init
 
   payment-service:
     build:
@@ -87,7 +89,8 @@ services:
       - backend
       - db
     depends_on:
-      - order-service-db 
+      - order-service-db
+      - database-init
 
   invoice-service:
     build:
@@ -103,6 +106,7 @@ services:
       - db
     depends_on:
       - invoice-service-db
+      - database-init
 
   ###############################nginx########################################
   nginx:
@@ -119,6 +123,39 @@ services:
       - product-service
 
   ###############################Databases#####################################
+  database-init:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+    volumes:
+      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - db
+    command: >
+      bash -c "
+        until PGPASSWORD=Rybenka!Dorsze47 psql -h user-service-db -U postgres -c '\q'; do
+          echo 'Waiting for user-service-db...'
+          sleep 2
+        done
+        until PGPASSWORD=Rybenka!Dorsze47 psql -h product-service-db -U postgres -c '\q'; do
+          echo 'Waiting for product-service-db...'
+          sleep 2
+        done
+        until PGPASSWORD=Rybenka!Dorsze47 psql -h invoice-service-db -U postgres -c '\q'; do
+          echo 'Waiting for invoice-service-db...'
+          sleep 2
+        done
+        until PGPASSWORD=Rybenka!Dorsze47 psql -h order-service-db -U postgres -c '\q'; do
+          echo 'Waiting for order-service-db...'
+          sleep 2
+        done
+        PGPASSWORD=Rybenka!Dorsze47 psql -h user-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
+        PGPASSWORD=Rybenka!Dorsze47 psql -h product-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
+        PGPASSWORD=Rybenka!Dorsze47 psql -h invoice-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
+        PGPASSWORD=Rybenka!Dorsze47 psql -h order-service-db -U postgres -f /docker-entrypoint-initdb.d/init.sql
+      "
+
   user-service-db:
     image: postgres:17
     environment:
