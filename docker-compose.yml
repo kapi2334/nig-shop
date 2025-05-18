@@ -43,8 +43,9 @@ services:
       - db
       - backend
     depends_on:
-      - user-service-db 
-      
+      - user-service-db
+      - database-init
+
   product-service:
     build:
       context: ./productService
@@ -61,7 +62,8 @@ services:
       - db
       - backend
     depends_on:
-      - product-service-db 
+      - product-service-db
+      - database-init
 
   payment-service:
     build:
@@ -91,7 +93,8 @@ services:
       - backend
       - db
     depends_on:
-      - order-service-db 
+      - order-service-db
+      - database-init
 
   invoice-service:
     build:
@@ -108,6 +111,7 @@ services:
       - db
     depends_on:
       - invoice-service-db
+      - database-init
 
   ###############################nginx########################################
   nginx:
@@ -124,6 +128,54 @@ services:
       - product-service
 
   ###############################Databases#####################################
+  database-init:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Rybenka!Dorsze47
+    networks:
+      - db
+    depends_on:
+      - user-service-db
+      - product-service-db
+      - invoice-service-db
+      - order-service-db
+    command: >
+      bash -c '
+        echo "Starting database initialization..."
+        
+        max_attempts=5
+        attempt=1
+        
+        for db in user-service-db product-service-db invoice-service-db order-service-db; do
+          echo "Checking connection to $$db..."
+          while ! PGPASSWORD=Rybenka!Dorsze47 psql -h $$db -U postgres -d postgres -c "SELECT 1;" > /dev/null 2>&1; do
+            echo "Attempt $$attempt/$$max_attempts: Waiting for $$db to be ready..."
+            sleep 2
+            attempt=$$((attempt + 1))
+            if [ $$attempt -gt $$max_attempts ]; then
+              echo "Error: Timeout waiting for $$db after $$max_attempts attempts"
+              exit 1
+            fi
+          done
+          echo "$$db is ready!"
+          attempt=1
+        done
+
+        echo "All databases are ready. Creating databases if they dont exist..."
+        
+        for db_host in user-service-db product-service-db invoice-service-db order-service-db; do
+          db_name=$${db_host%-db}service
+          echo "Creating database $$db_name on host $$db_host if it doesnt exist..."
+          PGPASSWORD=Rybenka!Dorsze47 psql -h $$db_host -U postgres -d postgres -c "CREATE DATABASE $$db_name;" && \
+            echo "Successfully created database $$db_name" || \
+            echo "Note: Database $$db_name already exists"
+        done
+        
+        echo "Database initialization completed successfully!"
+        exit 0
+      '
+
   user-service-db:
     image: postgres:17
     environment:
@@ -132,7 +184,6 @@ services:
       POSTGRES_DB: userservice
     volumes:
       - userservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5431:5432"
     networks:
@@ -148,7 +199,6 @@ services:
       - "5432:5432"
     volumes:
       - productservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
     
@@ -162,7 +212,6 @@ services:
       - "5433:5432"
     volumes:
       - invoiceservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db
   
@@ -176,9 +225,8 @@ services:
       - "5434:5432"
     volumes:
       - orderservice_data:/var/lib/postgresql/data
-      - .db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - db     
+      - db
       
 ###############################Networks definitions##########################
 networks:
