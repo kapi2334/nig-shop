@@ -65,6 +65,105 @@ namespace InvoiceService.Endpoints
             .WithName("GetInvoice")
             .WithOpenApi();
 
+
+            //GeneratePdf
+            endpoints.MapGet("/invoices/{inputId}/pdf", async (int inputId, AppDbContext db) =>
+            {
+                if (!db.Database.CanConnect())
+                {
+                    return Results.Problem(
+                        detail: $"Can't connect to invoiceService database. Connection: {db.Database.CanConnect()}",
+                        statusCode: StatusCodes.Status503ServiceUnavailable
+                    );
+                }
+
+                try
+                {
+                    var item = await db.Invoice
+                        .Include(i => i.issuer)
+                        .Include(i => i.products)
+                        .FirstOrDefaultAsync(i => i.id == inputId);
+
+                    if(item is null)
+                    {
+                        return Results.NotFound($"Invoice with given ID:{inputId} is not existing.");
+                    }
+
+                    Console.WriteLine($"Found invoice. Products count: {item.products?.Count ?? 0}");
+                    Console.WriteLine($"Issuer data present: {item.issuer != null}");
+
+                    if (item.issuer == null)
+                    {
+                        return Results.Problem(
+                            detail: "Invoice issuer data is missing",
+                            statusCode: StatusCodes.Status500InternalServerError
+                        );
+                    }
+
+                    if (item.products == null)
+                    {
+                        return Results.Problem(
+                            detail: "Invoice products list is null",
+                            statusCode: StatusCodes.Status500InternalServerError
+                        );
+                    }
+
+                    if (!item.products.Any())
+                    {
+                        return Results.Problem(
+                            detail: "Invoice products list is empty",
+                            statusCode: StatusCodes.Status500InternalServerError
+                        );
+                    }
+
+                    try
+                    {
+                        Console.WriteLine("Starting PDF generation...");
+                        InvoicePdfGeneratorService pdfService = new InvoicePdfGeneratorService();
+                        MemoryStream outPdf = pdfService.Generate(item);
+                        Console.WriteLine("PDF generated successfully");
+                        
+                        if (outPdf == null)
+                        {
+                            return Results.Problem(
+                                detail: "PDF generation returned null stream",
+                                statusCode: StatusCodes.Status500InternalServerError
+                            );
+                        }
+
+                        if (outPdf.Length == 0)
+                        {
+                            return Results.Problem(
+                                detail: "Generated PDF is empty",
+                                statusCode: StatusCodes.Status500InternalServerError
+                            );
+                        }
+
+                        return Results.File(outPdf.ToArray(), "application/pdf", $"invoice_{item.id}.pdf");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"PDF Generation error details: {ex}");
+                        return Results.Problem(
+                            detail: $"Error during generation of PDF file: {ex.Message}\nStack trace: {ex.StackTrace}",
+                            statusCode: StatusCodes.Status500InternalServerError
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"General error details: {ex}");
+                    return Results.Problem(
+                        detail: $"General error: {ex.Message}\nStack trace: {ex.StackTrace}",
+                        statusCode: StatusCodes.Status500InternalServerError
+                    );
+                }
+            })
+            .WithName("GetInvoicePdf")
+            .WithOpenApi();
+
+
+
             // DeleteSpecified
             endpoints.MapDelete("/invoices/{inputId}", async (int inputId, AppDbContext db) =>
             {
@@ -122,8 +221,23 @@ namespace InvoiceService.Endpoints
                     // Get user's address
                     string addressUri = app.Configuration.GetConnectionString("UserService") + $"address/{input.addressId}";
                     Address address = await apiService.GetAsync<Address>(addressUri);
+                    //Check is given address in reponse belongs to active user
+                    bool contains = false;
+                    foreach(Address adr in user.Addresses){
+                        if(adr.id == address.id){
+                            contains = true;
+                        }
+                    }
+                    if(contains == false){
+                      return Results.Problem(
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            detail: "Given address ID is not valid. Its not an address of given user."
+                        );
+  
+                    }
                     if (address is null)
                     {
+                        
                         return Results.Problem(
                             statusCode: StatusCodes.Status500InternalServerError,
                             detail: "Error while obtaining user's address from UserService."
@@ -150,10 +264,10 @@ namespace InvoiceService.Endpoints
                     Invoice outInvoice = new InvoiceBuilder()
                         .WithDataFromUser(user)
                         .WithDataFromAddress(address)
-                        .WithIssueDate(DateTime.Now)
+                        .WithIssueDate(DateTime.Now.ToUniversalTime())
                         .WithIssuer(issuer)
                         .WithIssuerId(issuer.id)
-                        .WithPaymentDeadline(DateTime.Now.AddDays(14))
+                        .WithPaymentDeadline(DateTime.Now.AddDays(14).ToUniversalTime())
                         .WithPaymentType(input.paymentType)
                         .Build();
 

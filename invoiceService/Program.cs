@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using InvoiceService.Data;
 using InvoiceService.Endpoints;
 using InvoiceService.Models.Services;
+using PdfSharpCore.Fonts;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -14,8 +16,19 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<ApiService>();
+// Initialize PDF fonts
+try
+{
+    PdfFontInitializer.Initialize();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Critical error during font initialization: {ex.Message}");
+    Console.WriteLine($"Stack trace: {ex.StackTrace}");
+    throw; // Prevent app from starting if fonts can't be initialized
+}
 
+builder.Services.AddHttpClient<ApiService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -37,7 +50,6 @@ app.UseHttpsRedirection();
 
 app.MapInvoicesEndpoints();
 app.MapIssuersEndpoints();
-
 
 app.Run();
 

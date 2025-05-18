@@ -6,6 +6,7 @@ namespace InvoiceService.Models
 {
     internal class Address
     {
+        public int id {get;set;}
         public string street { get; set; }
 
         public int buildingNo { get; set; }

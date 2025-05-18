@@ -11,7 +11,8 @@ namespace InvoiceService.Models.Builders{
         }
 
         public InvoiceBuilder WithDataFromUser(User inputUser){
-           _invoice.clientName = inputUser.name;
+           _invoice.clientName = inputUser.name + (inputUser.surname ?? "");
+		   
            _invoice.clientNIP = inputUser.nip;
            return this;
         }
