@@ -4,56 +4,93 @@
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
 @inject OrderService OrderService
+@inject UserService UserService
+@inject AddressService AddressService
+@inject InvoiceService InvoiceService
 
-<div class="container">
-    <div class="payment-header">
-        <h1 class="text-center">Payment</h1>
-    </div>
+<div class="container mt-4">
+    <h2>Payment Details</h2>
 
-    <div class="payment-details">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Order Summary</h5>
-                <p class="card-text">
-                    <strong>Total Products:</strong> @GetTotalProducts()<br />
-                    <strong>Total Amount:</strong> ₪@GetTotalAmount()<br />
-                    <strong>Delivery:</strong> @(includeDelivery ? "Yes (+₪20)" : "No")<br />
-                </p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Credit Card Information</h5>
+                    <EditForm Model="@cardDetails" OnValidSubmit="@HandlePayment">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <InputText id="cardNumber" @bind-Value="cardDetails.CardNumber" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cardHolder" class="form-label">Card Holder</label>
+                            <InputText id="cardHolder" @bind-Value="cardDetails.CardHolder" class="form-control" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiryDate" class="form-label">Expiry Date (MM/YY)</label>
+                                <InputText id="expiryDate" @bind-Value="cardDetails.ExpiryDate" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <InputText id="cvv" @bind-Value="cardDetails.CVV" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" @onclick="NavigateBack">Back</button>
+                            <button type="submit" class="btn btn-primary" disabled="@isProcessing">
+                                @if (isProcessing)
+                                {
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span class="ms-2">Processing...</span>
+                                }
+                                else
+                                {
+                                    <span>Pay</span>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
             </div>
         </div>
 
-        <EditForm Model="@paymentModel" OnValidSubmit="ProcessPayment" class="mock-payment-form mt-4">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-            <div class="form-group mb-3">
-                <label for="cardNumber">Card Number</label>
-                <InputText @bind-Value="paymentModel.CardNumber" class="form-control" id="cardNumber" />
-                <ValidationMessage For="@(() => paymentModel.CardNumber)" />
-            </div>
-            <div class="form-group mb-3">
-                <label for="cardHolder">Card Holder</label>
-                <InputText @bind-Value="paymentModel.CardHolder" class="form-control" id="cardHolder" />
-                <ValidationMessage For="@(() => paymentModel.CardHolder)" />
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="expiry">Expiry Date (MM/YY)</label>
-                    <InputText @bind-Value="paymentModel.ExpiryDate" class="form-control" id="expiry" />
-                    <ValidationMessage For="@(() => paymentModel.ExpiryDate)" />
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    @if (orderItems == null || !orderItems.Any())
+                    {
+                        <p>No items in order</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var item in orderItems)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@item.Product.Name</h6>
+                                            <small class="text-muted">Quantity: @item.Quantity</small>
+                                        </div>
+                                        <span>₪@item.TotalPrice</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="mt-3">
+                            <h5>Total: ₪@orderItems.Sum(item => item.TotalPrice)</h5>
+                        </div>
+                    }
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="cvv">CVV</label>
-                    <InputText @bind-Value="paymentModel.CVV" class="form-control" id="cvv" />
-                    <ValidationMessage For="@(() => paymentModel.CVV)" />
-                </div>
             </div>
-
-            <div class="payment-actions mt-4">
-                <button type="submit" class="btn btn-success payment-btn">Pay ₪@GetTotalAmount()</button>
-                <button type="button" class="btn btn-secondary cancel-btn" @onclick="CancelPayment">Cancel</button>
-            </div>
-        </EditForm>
+        </div>
     </div>
 </div>
 
@@ -91,62 +128,116 @@
 </style>
 
 @code {
+    private CardDetails cardDetails = new();
     private List<OrderItem> orderItems = new();
-    private bool includeDelivery = false;
-    private PaymentModel paymentModel = new();
+    private bool isProcessing = false;
+    private string? errorMessage;
 
     protected override void OnInitialized()
     {
         orderItems = OrderService.GetCurrentOrder();
-        includeDelivery = OrderService.GetDeliveryOption();
-        
-        // Set default values
-        paymentModel.CardNumber = "4111 1111 1111 1111";
-        paymentModel.CardHolder = "John Doe";
-        paymentModel.ExpiryDate = "12/25";
-        paymentModel.CVV = "123";
     }
 
-    private int GetTotalProducts()
+    private ProductDto MapToProductDto(Product product)
     {
-        return orderItems.Sum(item => item.Quantity);
+        return new ProductDto
+        {
+            id = product.Id,
+            name = product.Name,
+            type = product.Type,
+            weight = product.Weight,
+            price = product.Price,
+            tax = product.Tax,
+            dimensions = new DimensionsDto
+            {
+                length = product.Dimensions.Length,
+                width = product.Dimensions.Width,
+                height = product.Dimensions.Height
+            },
+            material = new MaterialDto
+            {
+                id = product.Material.Id,
+                name = product.Material.Name
+            },
+            surfaceType = new SurfaceTypeDto
+            {
+                id = product.SurfaceType.Id,
+                name = product.SurfaceType.Name
+            }
+        };
     }
 
-    private decimal GetTotalAmount()
+    private async Task HandlePayment()
     {
-        decimal baseAmount = orderItems.Sum(item => item.Product.Price * item.Quantity);
-        return includeDelivery ? baseAmount + 20 : baseAmount;
+        try
+        {
+            isProcessing = true;
+            errorMessage = null;
+
+            // Get current user
+            var user = await UserService.GetCurrentUserAsync();
+            if (user == null)
+            {
+                errorMessage = "User not found";
+                return;
+            }
+
+            // Get active address
+            var activeAddressId = await AddressService.GetActiveAddressId();
+            if (activeAddressId == null)
+            {
+                errorMessage = "No active address selected";
+                return;
+            }
+
+            // Create invoice
+            var invoice = new InvoiceDto
+            {
+                clientId = user.id,
+                paymentType = "card",
+                addressId = activeAddressId.Value,
+                products = orderItems.Select(item => new InvoiceProductDto
+                {
+                    productId = item.Product.Id,
+                    amount = item.Quantity
+                }).ToList()
+            };
+
+            // Send invoice
+            var (success, invoiceId) = await InvoiceService.CreateInvoice(invoice);
+            if (success && invoiceId.HasValue)
+            {
+                // Clear the order and navigate to success page
+                OrderService.ClearOrder();
+                NavigationManager.NavigateTo($"/order-success?invoiceId={invoiceId.Value}");
+            }
+            else
+            {
+                errorMessage = "Failed to process payment";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Console.WriteLine($"[Error] Payment processing failed: {ex.Message}");
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();
+        }
     }
 
-    private async Task ProcessPayment()
-    {
-        // Mock successful payment
-        await Task.Delay(1000); // Simulate processing
-        OrderService.ClearOrder(); // Clear the order after successful payment
-        NavigationManager.NavigateTo("/order-confirmation");
-    }
-
-    private void CancelPayment()
+    private void NavigateBack()
     {
         NavigationManager.NavigateTo("/order-summary");
     }
 
-    public class PaymentModel
+    public class CardDetails
     {
-        [Required(ErrorMessage = "Card number is required")]
-        [RegularExpression(@"^\d{4}\s\d{4}\s\d{4}\s\d{4}$", ErrorMessage = "Invalid card number format")]
-        public string CardNumber { get; set; }
-
-        [Required(ErrorMessage = "Card holder name is required")]
-        [MinLength(3, ErrorMessage = "Card holder name must be at least 3 characters")]
-        public string CardHolder { get; set; }
-
-        [Required(ErrorMessage = "Expiry date is required")]
-        [RegularExpression(@"^(0[1-9]|1[0-2])\/([0-9]{2})$", ErrorMessage = "Invalid expiry date format (MM/YY)")]
-        public string ExpiryDate { get; set; }
-
-        [Required(ErrorMessage = "CVV is required")]
-        [RegularExpression(@"^\d{3}$", ErrorMessage = "CVV must be 3 digits")]
-        public string CVV { get; set; }
+        public string CardNumber { get; set; } = string.Empty;
+        public string CardHolder { get; set; } = string.Empty;
+        public string ExpiryDate { get; set; } = string.Empty;
+        public string CVV { get; set; } = string.Empty;
     }
 } 

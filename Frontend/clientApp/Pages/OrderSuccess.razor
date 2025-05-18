@@ -1,0 +1,54 @@
+@page "/order-success"
+@using clientApp.Models
+@using clientApp.Services
+@inject NavigationManager NavigationManager
+
+<link href="css/order-success.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="text-center">
+        <div class="success-icon mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+        </div>
+        
+        <h2 class="mb-4">Order placed successfully!</h2>
+        
+        <div class="button-group">
+            <a href="@GetInvoicePdfUrl()" target="_blank" class="btn btn-primary mb-3">
+                <i class="fas fa-download me-2"></i>
+                Download Invoice
+            </a>
+            
+            <button class="btn btn-success" @onclick="NavigateToHome">
+                <i class="fas fa-home me-2"></i>
+                Return to Home
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int? invoiceId;
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var queryString = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        if (int.TryParse(queryString["invoiceId"], out int id))
+        {
+            invoiceId = id;
+        }
+    }
+
+    private void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private string GetInvoicePdfUrl()
+    {
+        return invoiceId.HasValue ? $"http://localhost:3002/invoices/{invoiceId}/pdf" : "#";
+    }
+} 

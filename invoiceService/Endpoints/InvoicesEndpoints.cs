@@ -275,10 +275,10 @@ namespace InvoiceService.Endpoints
                     await outInvoice.BuildProductInfosAsync(input.products, apiService);
 
                     // Add and save to database
-                    await db.Invoice.AddAsync(outInvoice);
+                    var invEntry = await db.Invoice.AddAsync(outInvoice);
                     await db.SaveChangesAsync();
 
-                    return Results.Ok(outInvoice);
+                    return Results.Ok(invEntry.Entity.id);
                 }
                 catch (Exception ex)
                 {

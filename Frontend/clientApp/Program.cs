@@ -27,6 +27,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddScoped<OrderApiService>();
 builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<InvoiceService>();
 
 // Add authentication services
 builder.Services.AddAuthorizationCore();
