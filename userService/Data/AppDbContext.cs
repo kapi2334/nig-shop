@@ -14,11 +14,10 @@ namespace UserService.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // One User to Many Addresses relationship
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Addresses)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId)
+                .WithOne()
+                .HasForeignKey("UserId")
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -20,9 +20,7 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var items = db.Address
-                    .Include(a=>a.UserId)
-                    .ToList();
+                    var items = await db.Address.ToListAsync();
 
                     if (items is not null)
                     {
@@ -47,9 +45,7 @@ namespace UserService.Endpoints
                         );
                     }
 
-                    var item = await db.Address
-                    .Include(a=>a.UserId)
-                    .FirstOrDefaultAsync(a=>a.id == inputId);
+                    var item = await db.Address.FirstOrDefaultAsync(a => a.id == inputId);
 
                     if (item is not null)
                     {
@@ -73,10 +69,11 @@ namespace UserService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var deleted = db.Address.Remove(db.Address.Find(inputId));
-                    if (deleted is not null)
+                    var address = await db.Address.FindAsync(inputId);
+                    if (address is not null)
                     {
-                        db.SaveChangesAsync();
+                        db.Address.Remove(address);
+                        await db.SaveChangesAsync();
                         return Results.Ok();
                     }
                     else
@@ -109,9 +106,7 @@ namespace UserService.Endpoints
                         .Build();
 
                         var entry = db.Address.Add(newAddress);
-                        // New occurrence added.
                         await db.SaveChangesAsync();
-                        // Returning id
                         return Results.Ok(entry.Entity.id);
                     }
                     catch (Exception ex)

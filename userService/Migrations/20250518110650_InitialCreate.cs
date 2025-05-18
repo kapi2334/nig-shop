@@ -41,23 +41,23 @@ namespace userService.Migrations
                     kodpocztowy = table.Column<string>(type: "text", nullable: false),
                     miasto = table.Column<string>(type: "text", nullable: false),
                     kraj = table.Column<string>(type: "text", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: true)
+                    UserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_adres", x => x.id);
                     table.ForeignKey(
-                        name: "FK_adres_podmiot_user_id",
-                        column: x => x.user_id,
+                        name: "FK_adres_podmiot_UserId",
+                        column: x => x.UserId,
                         principalTable: "podmiot",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_adres_user_id",
+                name: "IX_adres_UserId",
                 table: "adres",
-                column: "user_id");
+                column: "UserId");
         }
 
         /// <inheritdoc />

@@ -11,7 +11,7 @@ using UserService.Data;
 namespace userService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250518104717_InitialCreate")]
+    [Migration("20250518110650_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,8 +34,7 @@ namespace userService.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
+                        .HasColumnType("integer");
 
                     b.Property<int>("buildingNo")
                         .HasColumnType("integer")
@@ -114,12 +113,10 @@ namespace userService.Migrations
 
             modelBuilder.Entity("UserService.Models.Address", b =>
                 {
-                    b.HasOne("UserService.Models.User", "User")
+                    b.HasOne("UserService.Models.User", null)
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserService.Models.User", b =>
