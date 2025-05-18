@@ -99,12 +99,15 @@ namespace UserService.Endpoints
                     
                     try{
                             
-
                    Console.WriteLine($"{input.id}User adding procedure initalization..."); 
                    Console.WriteLine("Building user from given data."); 
+
+                   // Hash the password before saving
+                   string hashedPassword = PasswordHasher.HashPassword(input.passwordHash);
+
                         User newUser = new UserBuilder()
                         .WithLogin(input.login)
-                        .WithPasswordHash(input.passwordHash)
+                        .WithPasswordHash(hashedPassword)  // Use the hashed password
                         .WithNip(input.nip)
                         .WithType(input.type)
                         .WithName(input.name)
@@ -131,12 +134,35 @@ namespace UserService.Endpoints
                             detail: $"Error during adding new user to database: {ex.Message}"
                                 );
                     }
-
-
                 })
                 .WithName("addUser")
                 .WithOpenApi();
 
+            //login verification
+            endpoints.MapPost("/users/login", async (string login, string password, AppDbContext db) =>
+            {
+                if (!db.Database.CanConnect())
+                {
+                    return Results.Problem(
+                        detail: $"Can't connect to userService database. Connection: {db.Database.CanConnect()}",
+                        statusCode: StatusCodes.Status503ServiceUnavailable
+                    );
+                }
+
+                var user = await db.Users
+                    .FirstOrDefaultAsync(u => u.login == login);
+
+                if (user is not null && PasswordHasher.VerifyPassword(password, user.passwordHash))
+                {
+                    return Results.Ok(user.id);
+                }
+                else
+                {
+                    return Results.Unauthorized();
+                }
+            })
+            .WithName("LoginUser")
+            .WithOpenApi();
 
             return endpoints;
         }
