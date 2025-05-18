@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace invoiceService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250518125956_InitialCreate")]
+    [Migration("20250518134203_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -156,9 +156,6 @@ namespace invoiceService.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Invoiceid")
-                        .HasColumnType("integer");
-
                     b.Property<int>("dimensionsId")
                         .HasColumnType("integer")
                         .HasColumnName("wymiary_id");
@@ -195,9 +192,56 @@ namespace invoiceService.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Invoiceid");
-
                     b.ToTable("produkt", (string)null);
+                });
+
+            modelBuilder.Entity("InvoiceService.Models.ProductInfo", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<double>("gross")
+                        .HasColumnType("double precision")
+                        .HasColumnName("brutto");
+
+                    b.Property<int>("invoiceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("faktura_id");
+
+                    b.Property<double>("net")
+                        .HasColumnType("double precision")
+                        .HasColumnName("netto");
+
+                    b.Property<int>("product_id")
+                        .HasColumnType("integer")
+                        .HasColumnName("produkt_id");
+
+                    b.Property<string>("quantity")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ilosc");
+
+                    b.Property<int>("tax")
+                        .HasColumnType("integer")
+                        .HasColumnName("podatek");
+
+                    b.Property<double>("taxAmount")
+                        .HasColumnType("double precision")
+                        .HasColumnName("kwotapodatku");
+
+                    b.Property<double>("totalPrice")
+                        .HasColumnType("double precision")
+                        .HasColumnName("cenaogolem");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("invoiceId");
+
+                    b.ToTable("produktinfo");
                 });
 
             modelBuilder.Entity("InvoiceService.Models.Invoice", b =>
@@ -211,12 +255,13 @@ namespace invoiceService.Migrations
                     b.Navigation("issuer");
                 });
 
-            modelBuilder.Entity("InvoiceService.Models.Product", b =>
+            modelBuilder.Entity("InvoiceService.Models.ProductInfo", b =>
                 {
                     b.HasOne("InvoiceService.Models.Invoice", null)
                         .WithMany("products")
-                        .HasForeignKey("Invoiceid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("invoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvoiceService.Models.Invoice", b =>

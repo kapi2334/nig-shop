@@ -170,7 +170,8 @@
 
     private decimal GetTotalAmount()
     {
-        return orderItems.Sum(item => item.Product.Price * item.Quantity);
+        decimal baseAmount = orderItems.Sum(item => item.Product.Price * item.Quantity);
+        return includeDelivery ? baseAmount + 20 : baseAmount;
     }
 
     private void NavigateBack()
