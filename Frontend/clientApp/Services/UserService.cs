@@ -14,7 +14,7 @@ namespace clientApp.Services
         private readonly ApiService _apiService;
         private readonly NavigationManager _navigationManager;
         private User _currentUser;
-        private const string USER_SERVICE_URL = "http://user-service:5001/";  // Using container name with hyphen
+        private const string USER_SERVICE_URL = "http://localhost:3001/";  // Using localhost with exposed port
 
         // Add Credentials class to match backend exactly
         private class Credentials

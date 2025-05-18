@@ -11,6 +11,16 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     EnvironmentName = "Development"
 });
 
+// Add CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,11 +43,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Enable CORS
+app.UseCors();
+
 // -> localhost/api/productService
 //Api endpoints 
 app.MapAddressesEndpoints();
 app.MapUsersEndpoints();
-
 
 app.Run();
 
