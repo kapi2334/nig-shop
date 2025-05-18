@@ -18,7 +18,7 @@ namespace OrderService.Models
         [Column("id_zamowienia")]
         public int orderId { get; set; }
 
-        [NotMapped]
-        public List<OrderedProducts>? products { get; set; }
+        // Navigation property for ordered products
+        public virtual List<OrderedProducts> products { get; set; } = new();
     }
 }

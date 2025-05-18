@@ -5,6 +5,7 @@ namespace clientApp.Services
     public class OrderService
     {
         private List<OrderItem> currentOrder = new();
+        private bool includeDelivery = false;
 
         public List<OrderItem> GetCurrentOrder()
         {
@@ -19,6 +20,17 @@ namespace clientApp.Services
         public void ClearOrder()
         {
             currentOrder.Clear();
+            includeDelivery = false;
+        }
+
+        public bool GetDeliveryOption()
+        {
+            return includeDelivery;
+        }
+
+        public void SetDeliveryOption(bool delivery)
+        {
+            includeDelivery = delivery;
         }
     }
 } 

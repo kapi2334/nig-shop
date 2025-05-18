@@ -1,0 +1,32 @@
+@page "/order-confirmation"
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="confirmation-content text-center">
+        <div class="success-icon mb-4">
+            <span class="text-success" style="font-size: 64px;">✓</span>
+        </div>
+        <h1 class="mb-4">Thank You for Your Order!</h1>
+        <p class="mb-4">Your order has been successfully placed and paid for.</p>
+        <button class="btn btn-primary" @onclick="ReturnToHome">Return to Home</button>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .confirmation-content {
+        margin-top: 50px;
+    }
+</style>
+
+@code {
+    private void ReturnToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+} 

@@ -1,5 +1,6 @@
 using OrderService.Models;
 using OrderService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace OrderService.Endpoints
 {
@@ -18,7 +19,10 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var items = db.Order.ToList();
+                    var items = await db.Order
+                        .Include(o => o.products)
+                        .ToListAsync();
+                    
                     if (items is not null)
                     {
                         return Results.Ok(items);
@@ -41,7 +45,10 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var item = await db.Order.FindAsync(inputId);
+                    var item = await db.Order
+                        .Include(o => o.products)
+                        .FirstOrDefaultAsync(o => o.id == inputId);
+                        
                     if (item is not null)
                     {
                         return Results.Ok(item);
@@ -64,10 +71,11 @@ namespace OrderService.Endpoints
                             statusCode: StatusCodes.Status503ServiceUnavailable
                         );
                     }
-                    var deleted = db.Order.Remove(db.Order.Find(inputId));
-                    if (deleted is not null)
+                    var item = await db.Order.FindAsync(inputId);
+                    if (item is not null)
                     {
-                        db.SaveChangesAsync();
+                        db.Order.Remove(item);
+                        await db.SaveChangesAsync();
                         return Results.Ok();
                     }
                     else
@@ -90,11 +98,35 @@ namespace OrderService.Endpoints
                     }
                     try
                     {
-                        var entry = db.Order.Add(input);
-                        // New occurrence added.
-                        db.SaveChangesAsync();
-                        // Returning id
-                        return Results.Ok(entry.Entity.id);
+                        // Create new order without setting the ID
+                        var order = new Order
+                        {
+                            clientId = input.clientId,
+                            delivery = input.delivery,
+                            orderId = input.orderId
+                        };
+
+                        // Add the order
+                        db.Order.Add(order);
+                        await db.SaveChangesAsync();
+
+                        // Add products if they exist
+                        if (input.products != null && input.products.Any())
+                        {
+                            foreach (var product in input.products)
+                            {
+                                var orderedProduct = new OrderedProducts
+                                {
+                                    orderId = order.id,
+                                    productId = product.productId,
+                                    quantity = product.quantity
+                                };
+                                db.OrderedProducts.Add(orderedProduct);
+                            }
+                            await db.SaveChangesAsync();
+                        }
+
+                        return Results.Ok(order.id);
                     }
                     catch (Exception ex)
                     {
