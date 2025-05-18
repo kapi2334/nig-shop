@@ -39,6 +39,7 @@ services:
     ports:
       - "3001:5001" 
     networks:
+      - ui
       - db
       - backend
     depends_on:
@@ -56,6 +57,7 @@ services:
     ports:
       - "3000:5005" 
     networks:
+      - ui
       - db
       - backend
     depends_on:
@@ -71,8 +73,9 @@ services:
     ports:
       - "3004:5004" 
     networks:
-      - backend
+      - ui
       - db
+      - backend
 
   order-service:
     build:
@@ -84,6 +87,7 @@ services:
     ports:
       - "3003:5003" 
     networks:
+      - ui
       - backend
       - db
     depends_on:
@@ -99,6 +103,7 @@ services:
     ports:
       - "3002:5002" 
     networks:
+      - ui
       - backend
       - db
     depends_on:
@@ -189,4 +194,3 @@ volumes:
   productservice_data:
   invoiceservice_data:
   orderservice_data:
-

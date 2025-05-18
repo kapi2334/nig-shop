@@ -1,5 +1,7 @@
 @page "/login"
+@using clientApp.Services
 @inject NavigationManager NavigationManager
+@inject UserService UserService
 
 <div style="position: absolute; top: 2rem; left: 2rem;">
     <button class="btn p-0 border-0" @onclick="NavigateBack">
@@ -15,14 +17,30 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Username:</label>
-                <input type="text" class="form-control border-dark" @bind="username" />
+                <input type="text" class="form-control border-dark" @bind="username" @bind:event="oninput" @onkeypress="HandleKeyPress" />
             </div>
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" class="form-control border-dark" @bind="password" />
+                <input type="password" class="form-control border-dark" @bind="password" @bind:event="oninput" @onkeypress="HandleKeyPress" />
             </div>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @errorMessage
+                </div>
+            }
             <div class="mb-3">
-                <button class="btn btn-success w-100" style="background-color: #2ecc71;" @onclick="HandleLogin">LOG IN</button>
+                <button class="btn btn-success w-100" style="background-color: #2ecc71;" @onclick="HandleLogin" disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="ms-2">Logging in...</span>
+                    }
+                    else
+                    {
+                        <span>LOG IN</span>
+                    }
+                </button>
             </div>
             <div>
                 <button class="btn btn-outline-primary w-100" style="color: #3498db; border-color: #3498db;" @onclick="HandleSignUp">SIGN UP</button>
@@ -34,15 +52,54 @@
 @code {
     private string username = "";
     private string password = "";
+    private string errorMessage = "";
+    private bool isLoading = false;
 
-    private void HandleLogin()
+    private async Task HandleKeyPress(KeyboardEventArgs e)
     {
-        // TODO: Implement login logic
+        if (e.Key == "Enter")
+        {
+            await HandleLogin();
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            errorMessage = "";
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                errorMessage = "Please enter both username and password.";
+                return;
+            }
+
+            isLoading = true;
+            var result = await UserService.LoginAsync(username, password);
+            
+            if (result.Success)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = result.ErrorMessage;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred while trying to log in. Please try again.";
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private void HandleSignUp()
     {
-        // TODO: Implement signup logic
+        NavigationManager.NavigateTo("/signup");
     }
 
     private void NavigateBack()

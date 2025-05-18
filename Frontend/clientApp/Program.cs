@@ -14,9 +14,11 @@ builder.Services.AddScoped(sp =>
     var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
     // Add default headers
     httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    httpClient.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
     return httpClient;
 });
 
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddScoped<OrderApiService>();

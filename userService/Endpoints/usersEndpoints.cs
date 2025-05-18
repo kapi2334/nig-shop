@@ -139,8 +139,10 @@ namespace UserService.Endpoints
                 .WithOpenApi();
 
             //login verification
-            endpoints.MapPost("/users/login", async (string login, string password, AppDbContext db) =>
+            endpoints.MapPost("/users/login", async (Credentials input, AppDbContext db) =>
             {
+            string login = input.login;
+            string password = input.password;
                 if (!db.Database.CanConnect())
                 {
                     return Results.Problem(
