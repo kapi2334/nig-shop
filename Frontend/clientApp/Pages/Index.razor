@@ -1,10 +1,13 @@
 @page "/"
 @using clientApp.Models
 @using clientApp.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject ProductService ProductService
 @inject OrderService OrderService
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserService UserService
 
 <div class="container-fluid">
     <div class="row" style="height: 100vh;">
@@ -75,7 +78,19 @@
         <!-- Right Panel - Order List -->
         <div class="col-2 p-3" style="height: 100%; position: relative;">
             <div style="height: calc(100% - 50px); overflow-y: auto;">
-                <button class="btn btn-outline-primary w-100 mb-3" @onclick="NavigateToLogin">Log in</button>
+                @if (currentUser == null)
+                {
+                    <button class="btn btn-outline-primary w-100 mb-3" @onclick="NavigateToLogin">Log in</button>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <a href="/address-manager" class="text-primary text-decoration-none" style="cursor: pointer;">
+                            <span class="text-primary">Welcome, @currentUser.name!</span>
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="Logout">Logout</button>
+                    </div>
+                }
                 <h3>Current Order</h3>
                 @if (!orderItems.Any())
                 {
@@ -119,6 +134,7 @@
     private Product? selectedProduct;
     private List<OrderItem> orderItems = new();
     private string? error;
+    private User? currentUser;
 
     protected override async Task OnInitializedAsync()
     {
@@ -128,7 +144,10 @@
             products = await ProductService.GetProductsAsync();
             Logger.LogInformation($"Loaded {products?.Count ?? 0} products");
             
-            // Pobieramy aktualną listę zamówień
+            // Get current user
+            currentUser = await UserService.GetCurrentUserAsync();
+            
+            // Get current order
             orderItems = OrderService.GetCurrentOrder();
         }
         catch (Exception ex)
@@ -174,5 +193,12 @@
     {
         OrderService.SetCurrentOrder(orderItems);
         NavigationManager.NavigateTo("/order-summary");
+    }
+
+    private async Task Logout()
+    {
+        await UserService.LogoutAsync();
+        currentUser = null;
+        NavigationManager.NavigateTo("/", true);
     }
 } 

@@ -62,6 +62,53 @@ namespace UserService.Endpoints
                 .WithName("GetUser")
                 .WithOpenApi();
 
+endpoints.MapPut("/users/{inputId}", async (int inputId, UserDto updatedUser, AppDbContext db) =>
+{
+    if (!db.Database.CanConnect())
+    {
+        return Results.Problem(
+            detail: $"Can't connect to userService database. Connection: {db.Database.CanConnect()}",
+            statusCode: StatusCodes.Status503ServiceUnavailable
+        );
+    }
+
+    var existingUser = await db.Users
+        .Include(u => u.Addresses)
+        .FirstOrDefaultAsync(u => u.id == inputId);
+
+    if (existingUser is null)
+    {
+        return Results.NotFound($"User with id {inputId} not found.");
+    }
+
+    try
+    {
+        // Update fields
+        existingUser.login = updatedUser.login;
+        existingUser.passwordHash = PasswordHasher.HashPassword(updatedUser.passwordHash); // Rehash
+        existingUser.nip = updatedUser.nip;
+        existingUser.type = updatedUser.type;
+        existingUser.name = updatedUser.name;
+        existingUser.surname = updatedUser.surname;
+
+        // Update addresses using AddressMapperService
+        AddressMapperService mapper = new AddressMapperService();
+        existingUser.Addresses = await mapper.MapoutAddressAsync(updatedUser.Addresses.ToList(), db);
+
+        await db.SaveChangesAsync();
+        return Results.NoContent(); // 204 No Content
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(
+            statusCode: StatusCodes.Status500InternalServerError,
+            detail: $"Error during user update: {ex.Message}"
+        );
+    }
+})
+.WithName("UpdateUser")
+.WithOpenApi();
+
             //deleteSpecified
             endpoints.MapDelete("/users/{inputId}", async (int inputId, AppDbContext db) =>
                 {
@@ -152,6 +199,7 @@ namespace UserService.Endpoints
                 }
 
                 var user = await db.Users
+					.Include(u => u.Addresses)
                     .FirstOrDefaultAsync(u => u.login == login);
 
                 if (user is not null && PasswordHasher.VerifyPassword(password, user.passwordHash))
