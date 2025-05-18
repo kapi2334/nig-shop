@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using UserService.Models;
 
 namespace UserService.Models{
     [Table("adres")]
@@ -26,11 +25,5 @@ namespace UserService.Models{
 
         [Column("kraj")]
         public string country { get; set; }
-
-        [Column("user_id")]
-        public int? UserId { get; set; }
-
-        [ForeignKey("UserId")]
-        public User? User { get; set; }
     }
 }

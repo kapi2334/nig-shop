@@ -43,17 +43,6 @@ internal class AddressBuilder{
         return this;
     }
 
-    public AddressBuilder WithUserId(int? userId){
-        _address.UserId = userId;
-        return this;
-    }
-
-    public AddressBuilder WithUser(User user){
-        _address.User = user;
-        _address.UserId = user.id;
-        return this;
-    }
-
     public Address Build(){
         return _address;
     }
