@@ -21,7 +21,7 @@ namespace UserService.Endpoints
                         );
                     }
                     var items = db.Address
-                    .Include(a=>a.User)
+                    .Include(a=>a.UserId)
                     .ToList();
 
                     if (items is not null)
@@ -48,7 +48,7 @@ namespace UserService.Endpoints
                     }
 
                     var item = await db.Address
-                    .Include(a=>a.User)
+                    .Include(a=>a.UserId)
                     .FirstOrDefaultAsync(a=>a.id == inputId);
 
                     if (item is not null)

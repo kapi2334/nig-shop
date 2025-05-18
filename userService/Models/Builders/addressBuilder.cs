@@ -50,6 +50,7 @@ internal class AddressBuilder{
 
     public AddressBuilder WithUser(User user){
         _address.User = user;
+        _address.UserId = user.id;
         return this;
     }
 

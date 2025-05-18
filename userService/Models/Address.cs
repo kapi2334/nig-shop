@@ -27,6 +27,7 @@ namespace UserService.Models{
         [Column("kraj")]
         public string country { get; set; }
 
+        [Column("user_id")]
         public int? UserId { get; set; }
 
         [ForeignKey("UserId")]

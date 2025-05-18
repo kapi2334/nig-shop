@@ -15,11 +15,10 @@ namespace UserService.Models{
         [Column("passwordhash")]
         public string passwordHash { get; set; }
 
-        public int addressID { get; set; }
-        public ICollection<Address> Addresses { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
         [Column("nip")]
-        public  long? nip { get; set; }
+        public long? nip { get; set; }
 		
 		private char _type = 'u'; // default value - user
 
@@ -41,6 +40,5 @@ namespace UserService.Models{
 
         [Column("nazwisko")]
         public string? surname { get; set; }
-
     }
 }
