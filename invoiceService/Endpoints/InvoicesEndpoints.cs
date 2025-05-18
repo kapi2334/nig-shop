@@ -1,5 +1,6 @@
 using InvoiceService.Models;
 using InvoiceService.Models.Services;
+using InvoiceService.Models.Builders;
 using InvoiceService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -102,9 +103,39 @@ namespace InvoiceService.Endpoints
                 {
                     if (endpoints is WebApplication app){
                         var apiService = app.Services.GetRequiredService<ApiService>();
-                        Invoice outInvoice = new Invoice();
+                        User user = await apiService.GetAsync<User>(app.Configuration.GetConnectionString("UserService"));
+                        Issuer issuer = db.Issuer
+                        .OrderByDescending(i=>i.id)
+                        .FirstOrDefault();
+
+                        if(user is not null ){
+                            if(issuer is null) { return Results.NotFound("Valid issuer data not found. Service may be temporarily unavailable.");}
+                        //Create invoice from given data
+                        Invoice outInvoice = new InvoiceBuilder()
+                            .WithDataFromUser(user)
+                            .WithIssueDate(DateTime.Now)
+                            .WithIssuer(issuer)
+                            .WithIssuerId(issuer.id)
+                            .WithPaymentDeadline(DateTime.Now.AddDays(14))
+                            .WithPaymentType(input.paymentType)
+                            .Build();
+                        //Create Products on invoice 
                         await outInvoice.BuildProductInfosAsync(input.products, apiService);
-                        return Results.Ok($"o:{outInvoice.products}.");
+                            return Results.Ok(outInvoice);
+
+                        }else{
+                            return Results.Problem(
+                                    statusCode: StatusCodes.Status500InternalServerError,
+                                    detail: "Error while obtaining user from UserService."
+                                    );
+
+                        }
+                        
+                        
+
+
+
+                        return Results.Ok();
                     }else{
                         return Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "Cant access httpService");
                     } 

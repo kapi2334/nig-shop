@@ -13,7 +13,6 @@ internal class AddressDto{
 
         public string country { get; set; }
 
-        public int? UserId { get; set; }
 
     }
 

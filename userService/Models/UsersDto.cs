@@ -10,7 +10,7 @@ namespace UserService.Models{
         public string passwordHash { get; set; }
 
         public int addressID { get; set; }
-        public ICollection<Address>? Addresses { get; set; }
+        public ICollection<AddressDto>? Addresses { get; set; }
 
         public  long? nip { get; set; }
 

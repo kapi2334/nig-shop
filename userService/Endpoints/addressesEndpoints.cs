@@ -106,7 +106,6 @@ namespace UserService.Endpoints
                         .WithLocaleNo(input.localeNo)
                         .WithPostCode(input.postCode)
                         .WithStreet(input.street)
-                        .WithUserId(input.UserId)
                         .Build();
 
                         var entry = db.Address.Add(newAddress);
