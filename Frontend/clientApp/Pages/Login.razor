@@ -1,0 +1,52 @@
+@page "/login"
+@inject NavigationManager NavigationManager
+
+<div style="position: absolute; top: 2rem; left: 2rem;">
+    <button class="btn p-0 border-0" @onclick="NavigateBack">
+        <span style="color: crimson; font-size: 1.5rem; font-weight: bold;">Go Back</span>
+    </button>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="height: 100vh;">
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                <h1 style="font-weight: bold; font-size: 3rem;">LOGGING IN</h1>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username:</label>
+                <input type="text" class="form-control border-dark" @bind="username" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control border-dark" @bind="password" />
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success w-100" style="background-color: #2ecc71;" @onclick="HandleLogin">LOG IN</button>
+            </div>
+            <div>
+                <button class="btn btn-outline-primary w-100" style="color: #3498db; border-color: #3498db;" @onclick="HandleSignUp">SIGN UP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+
+    private void HandleLogin()
+    {
+        // TODO: Implement login logic
+    }
+
+    private void HandleSignUp()
+    {
+        // TODO: Implement signup logic
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+} 

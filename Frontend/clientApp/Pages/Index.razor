@@ -3,11 +3,12 @@
 @using clientApp.Services
 @inject ProductService ProductService
 @inject ILogger<Index> Logger
+@inject NavigationManager NavigationManager
 
 <div class="container-fluid">
     <div class="row" style="height: 100vh;">
         <!-- Left Panel - Product List -->
-        <div class="col-4 border-end p-3" style="height: 100%; overflow-y: auto;">
+        <div class="col-2 border-end p-3" style="height: 100%; overflow-y: auto;">
             <h3>Products</h3>
             @if (error != null)
             {
@@ -30,7 +31,7 @@
                     {
                         <button class="list-group-item list-group-item-action @(selectedProduct?.Id == product.Id ? "active" : "")"
                                 @onclick="() => SelectProduct(product)">
-                            @product.Name (@product.Id)
+                            @product.Name
                         </button>
                     }
                 </div>
@@ -38,7 +39,7 @@
         </div>
 
         <!-- Center Panel - Product Details -->
-        <div class="col-4 border-end p-3" style="height: 100%; overflow-y: auto;">
+        <div class="col-8 border-end p-3" style="height: 100%; overflow-y: auto;">
             <h3>Product Details</h3>
             @if (selectedProduct != null)
             {
@@ -49,7 +50,7 @@
                             <strong>ID:</strong> @selectedProduct.Id<br />
                             <strong>Type:</strong> @selectedProduct.Type<br />
                             <strong>Weight:</strong> @selectedProduct.Weight kg<br />
-                            <strong>Price:</strong> $@selectedProduct.Price<br />
+                            <strong>Price:</strong> ₪@selectedProduct.Price<br />
                             <strong>Tax:</strong> @selectedProduct.Tax%<br />
                         </p>
                         <h6>Dimensions:</h6>
@@ -71,31 +72,43 @@
         </div>
 
         <!-- Right Panel - Order List -->
-        <div class="col-4 p-3" style="height: 100%; overflow-y: auto;">
-            <h3>Current Order</h3>
-            @if (!orderProducts.Any())
-            {
-                <p>No products in order</p>
-            }
-            else
-            {
-                <div class="list-group">
-                    @foreach (var product in orderProducts)
-                    {
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>@product.Name</span>
-                                <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromOrder(product)">
-                                    Remove
-                                </button>
+        <div class="col-2 p-3" style="height: 100%; position: relative;">
+            <div style="height: calc(100% - 50px); overflow-y: auto;">
+                <button class="btn btn-outline-primary w-100 mb-3" @onclick="NavigateToLogin">Log in</button>
+                <h3>Current Order</h3>
+                @if (!orderItems.Any())
+                {
+                    <p>No products in order</p>
+                }
+                else
+                {
+                    <div class="list-group">
+                        @foreach (var item in orderItems)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span>@item.Product.Name</span>
+                                        <small class="text-muted ms-2">x @item.Quantity</small>
+                                    </div>
+                                    <div>
+                                        <span class="me-2">₪@item.TotalPrice</span>
+                                        <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromOrder(item)">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
-                <div class="mt-3">
-                    <h5>Total: $@orderProducts.Sum(p => p.Price)</h5>
-                </div>
-            }
+                        }
+                    </div>
+                    <div class="mt-3">
+                        <h5>Total: ₪@orderItems.Sum(item => item.TotalPrice)</h5>
+                    </div>
+                }
+            </div>
+            <div style="position: absolute; bottom: 1rem; right: 1rem; width: calc(100% - 2rem);">
+                <button class="btn btn-success w-100">Zamuf</button>
+            </div>
         </div>
     </div>
 </div>
@@ -103,7 +116,7 @@
 @code {
     private List<Product>? products;
     private Product? selectedProduct;
-    private List<Product> orderProducts = new();
+    private List<OrderItem> orderItems = new();
     private string? error;
 
     protected override async Task OnInitializedAsync()
@@ -128,11 +141,28 @@
 
     private void AddToOrder(Product product)
     {
-        orderProducts.Add(product);
+        var existingItem = orderItems.FirstOrDefault(item => item.Product.Id == product.Id);
+        if (existingItem != null)
+        {
+            existingItem.Quantity++;
+        }
+        else
+        {
+            orderItems.Add(new OrderItem(product));
+        }
     }
 
-    private void RemoveFromOrder(Product product)
+    private void RemoveFromOrder(OrderItem item)
     {
-        orderProducts.Remove(product);
+        item.Quantity--;
+        if (item.Quantity < 1)
+        {
+            orderItems.Remove(item);
+        }
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
     }
 } 
