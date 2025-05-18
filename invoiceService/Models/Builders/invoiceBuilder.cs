@@ -56,7 +56,7 @@ namespace InvoiceService.Models.Builders{
             return this;
         }
 
-        public InvoiceBuilder WithProducts(List<Product> products)
+        public InvoiceBuilder WithProducts(List<ProductInfo> products)
         {
             _invoice.products = products;
             return this;

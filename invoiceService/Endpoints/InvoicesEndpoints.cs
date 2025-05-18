@@ -101,47 +101,70 @@ namespace InvoiceService.Endpoints
                 }
                 try
                 {
-                    if (endpoints is WebApplication app){
-                        var apiService = app.Services.GetRequiredService<ApiService>();
-                        string uri = app.Configuration.GetConnectionString("UserService")+ $"users/{input.clientId}";
-                        Console.WriteLine("Got an API handle");
-                        User user = await apiService.GetAsync<User>(uri);
-                        
-                        Console.WriteLine("usersService API responded successfully.");
-                        Issuer issuer = db.Issuer
-                        .OrderByDescending(i=>i.id)
-                        .FirstOrDefault();
+                    if (endpoints is not WebApplication app)
+                    {
+                        return Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "Can't access httpService");
+                    }
 
-                        Console.WriteLine("Issuer obtained successfully.");
-                        if(user is not null ){
-                            Console.WriteLine("User is valid.");
-                            if(issuer is null) { return Results.NotFound("Valid issuer data not found. Service may be temporarily unavailable.");}
-                        //Create invoice from given data
-                        Invoice outInvoice = new InvoiceBuilder()
-                            .WithDataFromUser(user)
-                            .WithIssueDate(DateTime.Now)
-                            .WithIssuer(issuer)
-                            .WithIssuerId(issuer.id)
-                            .WithPaymentDeadline(DateTime.Now.AddDays(14))
-                            .WithPaymentType(input.paymentType)
-                            .Build();
-                        //Create Products on invoice 
-                        await outInvoice.BuildProductInfosAsync(input.products, apiService);
-                            return Results.Ok(outInvoice);
+                    var apiService = app.Services.GetRequiredService<ApiService>();
+                    
+                    // Get user data
+                    string userUri = app.Configuration.GetConnectionString("UserService") + $"users/{input.clientId}";
+                    User user = await apiService.GetAsync<User>(userUri);
+                    if (user is null)
+                    {
+                        return Results.Problem(
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            detail: "Error while obtaining user from UserService."
+                        );
+                    }
 
-                        }else{
-                            return Results.Problem(
-                                    statusCode: StatusCodes.Status500InternalServerError,
-                                    detail: "Error while obtaining user from UserService."
-                                    );
+                    // Get user's address
+                    string addressUri = app.Configuration.GetConnectionString("UserService") + $"address/{input.addressId}";
+                    Address address = await apiService.GetAsync<Address>(addressUri);
+                    if (address is null)
+                    {
+                        return Results.Problem(
+                            statusCode: StatusCodes.Status500InternalServerError,
+                            detail: "Error while obtaining user's address from UserService."
+                        );
+                    }
+                    
 
-                        }
-                        return Results.Ok();
-                    }else{
-                        return Results.Problem(statusCode: StatusCodes.Status500InternalServerError, detail: "Cant access httpService");
-                    } 
+                    // Get issuer
+                    Issuer issuer = await db.Issuer
+                        .OrderByDescending(i => i.id)
+                        .FirstOrDefaultAsync();
 
-                    return Results.Ok();
+                    if (issuer is null)
+                    {
+                        return Results.NotFound("Valid issuer data not found. Service may be temporarily unavailable.");
+                    }
+
+                    if (input.products == null || !input.products.Any())
+                    {
+                        return Results.BadRequest("Products list cannot be empty");
+                    }
+
+                    // Create invoice from given data
+                    Invoice outInvoice = new InvoiceBuilder()
+                        .WithDataFromUser(user)
+                        .WithDataFromAddress(address)
+                        .WithIssueDate(DateTime.Now)
+                        .WithIssuer(issuer)
+                        .WithIssuerId(issuer.id)
+                        .WithPaymentDeadline(DateTime.Now.AddDays(14))
+                        .WithPaymentType(input.paymentType)
+                        .Build();
+
+                    // Create Products on invoice 
+                    await outInvoice.BuildProductInfosAsync(input.products, apiService);
+
+                    // Add and save to database
+                    await db.Invoice.AddAsync(outInvoice);
+                    await db.SaveChangesAsync();
+
+                    return Results.Ok(outInvoice);
                 }
                 catch (Exception ex)
                 {

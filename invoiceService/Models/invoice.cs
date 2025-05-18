@@ -9,6 +9,11 @@ namespace InvoiceService.Models
     [Table("faktura")]
     internal class Invoice
     {
+        public Invoice()
+        {
+            products = new List<ProductInfo>();
+        }
+
         [Key]
         [Column("id")]
         public int id { get; set; }
@@ -52,11 +57,14 @@ namespace InvoiceService.Models
         [ForeignKey("issuerId")]
         public Issuer issuer { get; set; }
 
-        public List<Product> products { get; set; }
+        public List<ProductInfo> products { get; set; }
 
         public async Task BuildProductInfosAsync(List<ProductDto> productDtos, ApiService apiService)
         {
-            var productList = new List<Product>();
+            if (products == null)
+            {
+                products = new List<ProductInfo>();
+            }
 
             foreach (var dto in productDtos)
             {
@@ -66,11 +74,25 @@ namespace InvoiceService.Models
                 {
                     throw new Exception($"Api response error: product with id:{dto.productId} returned empty.");
                 }
-                
-                productList.Add(product);
-            }
 
-            products = productList;
+                //Calculating required variables
+                double totalPrice = product.price * dto.amount;
+                double net = totalPrice / (1 + (product.tax / 100.0));
+                double taxAmount = totalPrice - net;
+                
+                //building productInfo
+                var productInfo = new ProductInfoBuilder()
+                    .WithProductId(product.id)
+                    .WithQuantity(dto.amount.ToString())
+                    .WithTotalPrice(totalPrice)
+                    .WithNet(Math.Round(net, 2))
+                    .WithTax(product.tax)
+                    .WithTaxAmount(Math.Round(taxAmount, 2))
+                    .WithGross(Math.Round(totalPrice, 2))
+                    .Build();
+                
+                products.Add(productInfo);
+            }
         }
     }
 }
