@@ -66,6 +66,7 @@ The system consists of the following components:
 
 Each component operates as an independent API — receiving information, processing it, and returning the result to the user.
 In line with the microservices architecture, every component also maintains its own PostgreSQL database — which significantly increases both scalability and the reliability of each service.
+
 ---
 
 ## 6. FAQ
@@ -126,6 +127,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
 
 
