@@ -12,9 +12,9 @@ The project follows the **Backend-for-Frontend + microservices** approach, with 
 
 ## 2. Features
 
-The main workflow of the application is designed to automate product sales and invoice generation. Our client can conveniently purchase a product from the catalog on the website — by adding it to the cart, reviewing its properties, etc. — proceed with payment, automatically receive a generated invoice, and have the completed order stored in the database. This allows us to track which orders are pending fulfillment on our side.
+The main workflow of the application is designed to automate product sales and invoice generation. Our client can conveniently purchase a product from the catalog on the website - by adding it to the cart, reviewing its properties, etc. - proceed with payment, automatically receive a generated invoice, and have the completed order stored in the database. This allows us to track which orders are pending fulfillment on our side.
 
-Additionally, the application provides an account management system — including registration, login, storing user data, and selecting from multiple delivery addresses.
+Additionally, the application provides an account management system - including registration, login, storing user data, and selecting from multiple delivery addresses.
 
 The entire application is based on API microservices that communicate with each other. This architecture enables efficient enhancement of the application’s functionality and, in case of operational issues, ensures partial availability of the system despite service disruptions.
 
@@ -64,8 +64,8 @@ The system consists of the following components:
 | invoiceService | Invoice generation and storage | :3002 |
 | nginx          | Reverse proxy, routing, SSL, load balancing |  |
 
-Each component operates as an independent API — receiving information, processing it, and returning the result to the user.
-In line with the microservices architecture, every component also maintains its own PostgreSQL database — which significantly increases both scalability and the reliability of each service.
+Each component operates as an independent API - receiving information, processing it, and returning the result to the user.
+In line with the microservices architecture, every component also maintains its own PostgreSQL database - which significantly increases both scalability and the reliability of each service.
 
 ---
 
@@ -127,6 +127,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
 
 
