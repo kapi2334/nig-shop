@@ -54,7 +54,7 @@ After setup:
 The system consists of the following components:
 
 | Component      | Responsibility | Port|
-|----------------|----------------|
+|----------------|----------------|----------------|
 | Frontend       | User interface of the shop | :4000
 | userService    | Authentication, registration, user data management | :3001
 | productService | CRUD operations for products, categories, stock | :3000
@@ -125,3 +125,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
