@@ -38,7 +38,7 @@ docker-compose up --build
 
 After setup:
 
-1. The frontend should be available at `http://localhost:3000`  
+1. The frontend should be available at `http://localhost:4000`  
 2. Backend services expose APIs on their assigned ports (see `docker-compose.yml`/ table below for mappings)  
 3. Example workflow:  
    - Register a user  (use frontend user app)
@@ -127,6 +127,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
 
 
