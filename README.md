@@ -53,6 +53,7 @@ After setup:
 
 The system consists of the following components:
 
+
 | Component      | Responsibility | Port|
 |----------------|----------------|----------------|
 | Frontend       | User interface of the shop | :4000
@@ -61,7 +62,7 @@ The system consists of the following components:
 | orderService   | Order placement, processing, and tracking | :3003
 | paymentService | Payment processing (external API integration) | :3004
 | invoiceService | Invoice generation and storage | :3002
-| nginx          | Reverse proxy, routing, SSL, load balancing | -
+| nginx          | Reverse proxy, routing, SSL, load balancing | - |
 
 Each component operates as an independent API — receiving information, processing it, and returning the result to the user.
 In line with the microservices architecture, every component also maintains its own PostgreSQL database — which significantly increases both scalability and the reliability of each service.
@@ -125,4 +126,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 
